@@ -1,0 +1,12 @@
+{
+  "name": "mobile2",
+  "displayName": "mobile2",
+  "expo": {
+    "name": "mobile2",
+    "slug": "mobile2",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
