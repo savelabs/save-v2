@@ -1,10 +1,21 @@
 {
-  "name": "mobile2",
-  "displayName": "mobile2",
+  "name": "Save",
+  "displayName": "Save",
   "expo": {
-    "name": "mobile2",
-    "slug": "mobile2",
-    "version": "1.0.0",
+    "name": "Save",
+    "slug": "Save",
+    "version": "2.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "backgroundColor": "#5F2F8E"
+    },
+    "primaryColor": "#5F2F8E",
+    "notification": {
+      "icon": "./assets/notify.png",
+      "color":  "#5F2F8E"
+    },
     "assetBundlePatterns": [
       "**/*"
     ]

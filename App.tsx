@@ -1,19 +1,34 @@
+import 'react-native-gesture-handler';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+
+import AppLoading from 'expo-app-loading';
+import { useFonts, BalooChettan2_700Bold, BalooChettan2_500Medium } from '@expo-google-fonts/baloo-chettan-2';
+import {
+  Poppins_400Regular,
+  Poppins_600SemiBold,
+  Poppins_500Medium,
+  Poppins_700Bold
+} from '@expo-google-fonts/poppins';
+import { Routes } from './src/routes/index.routes';
+import { AppProvider } from './src/hooks';
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    BalooChettan2_700Bold,
+    BalooChettan2_500Medium,
+    Poppins_400Regular,
+    Poppins_600SemiBold,
+    Poppins_500Medium,
+    Poppins_700Bold
+  });
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-    </View>
+    <AppProvider>
+      <Routes />
+    </AppProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
