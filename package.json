@@ -8,6 +8,12 @@
     "expo": "sudo expo start",
     "test": "jest"
   },
+  "husky": {
+    "hooks": {
+      "commit-msg": "yarn --no -- commitlint --edit $1",
+      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
+    }
+  },
   "dependencies": {
     "@expo-google-fonts/baloo-chettan-2": "^0.1.0",
     "@expo-google-fonts/poppins": "^0.1.0",
