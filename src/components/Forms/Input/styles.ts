@@ -13,7 +13,7 @@ export const InputContainer = styled.View`
 `
 
 export const BorderContainer = styled.View`
-  height: ${RFValue(64)}px;
+  height: ${RFValue(52)}px;
   width: 100%;
 
   padding: 2px;
@@ -35,7 +35,7 @@ export const Container = styled(TextInput)<Props>`
 
   font-family: ${({ theme }) => theme.fonts.regular};
   color: ${({ theme }) => theme.colors.text};
-  font-size: ${RFValue(14)}px;
+  font-size: ${RFValue(12)}px;
 
   ${(props) => props.border && (
     css`
@@ -55,7 +55,7 @@ export const Container = styled(TextInput)<Props>`
 
 export const Title = styled.Text`
   font-family: ${({ theme }) => theme.fonts.regular};
-  font-size: ${RFValue(14)}px;
+  font-size: ${RFValue(11)}px;
   color: ${({ theme }) => theme.colors.text};
 `
 

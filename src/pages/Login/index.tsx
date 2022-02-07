@@ -11,7 +11,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Illustration from '../../assets/login-image.svg';
 import { Button } from '../../components/Forms/Button';
 import { InputForm } from '../../components/Forms/InputForm';
-import { BlurModal } from '../../components/BlurModal';
 
 import {
   Container,
@@ -117,6 +116,7 @@ export function Login() {
               control={control}
               placeholder="Digite sua senha"
               autoCorrect={false}
+              autoCapitalize="none"
               secureTextEntry={isPasswordHidden}
               password
               onPress={() => setIsPasswordHidden(!isPasswordHidden)}
@@ -133,16 +133,14 @@ export function Login() {
               </Button>
             ) : (
               <Button
-                title="Enviar"
+                title="Entrar"
                 onPress={handleSubmit(handleRegisterUser)}
               />
             )
           }
-          {!isKeyboardActive && (
-            <TouchableOpacity>
-              <Policy>Política de Privacidade</Policy>
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity>
+            <Policy>Política de Privacidade</Policy>
+          </TouchableOpacity>
         </FormContainer>
       </Container>
     </>

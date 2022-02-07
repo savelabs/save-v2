@@ -45,6 +45,6 @@ export const Policy = styled.Text`
   margin: ${RFValue(18)}px ${RFValue(18)}px;
 
   font-family: ${({ theme }) => theme.fonts.regular};
-  font-size: ${RFValue(14)}px;
+  font-size: ${RFValue(10)}px;
   color: ${({ theme }) => theme.colors.primary};
 `

@@ -4,7 +4,7 @@ import { RFValue } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
 
 export const Container = styled(RectButton)`
-  height: ${RFValue(56)}px;
+  height: ${RFValue(48)}px;
   width: 100%;
   background-color: ${({ theme }) => theme.colors.primary};
   border-radius: 16px;
@@ -16,5 +16,5 @@ export const Container = styled(RectButton)`
 export const Title = styled.Text`
   font-family: ${({ theme }) => theme.fonts.semibold};
   color: ${({ theme }) => theme.colors.background};
-  font-size: ${RFValue(16)}px;
+  font-size: ${RFValue(12)}px;
 `

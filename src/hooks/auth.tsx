@@ -13,11 +13,12 @@ type Student = {
   notification?: boolean;
   studentID: string;
   cpf: string;
-  usualName: string;
+  nomeUsual: string;
   completeName: string;
   birthDate: string;
   emailSuap: string;
   email: string;
+  avatarSave: string;
   avatarSuap: string;
   avatarSaveURL: string;
   campus: string;
@@ -98,7 +99,6 @@ export function AuthProvider({ children }: AuthProvider) {
   }
 
   async function signIn({ matricula, password }: SignInType) {
-    console.log(matricula, password);
     try {
       const response = await suapApi.post('/autenticacao/token/', {
         username: matricula,
@@ -123,6 +123,7 @@ export function AuthProvider({ children }: AuthProvider) {
         setData({ student, token });
       } catch (error) {
         console.log('erro');
+        console.log(error);
         // TRATATIVA DE ERRO SUAP ERROR
       }
     } catch (error) {
