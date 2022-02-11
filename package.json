@@ -10,7 +10,6 @@
   },
   "husky": {
     "hooks": {
-      "commit-msg": "yarn --no -- commitlint --edit $1",
       "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
     }
   },
@@ -59,6 +58,7 @@
     "@types/styled-components-react-native": "^5.1.1",
     "babel-preset-expo": "~8.3.0",
     "commitizen": "^4.2.4",
+    "commitlint": "^16.1.0",
     "cz-conventional-changelog": "3.3.0",
     "devmoji": "^2.3.0",
     "husky": "^7.0.4",
