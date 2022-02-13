@@ -8,6 +8,7 @@ import React, {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { saveApi, suapApi } from '../services/api';
+import { ClientSuap } from 'suap-sdk-javascript';
 
 type Student = {
   notification?: boolean;
@@ -99,37 +100,43 @@ export function AuthProvider({ children }: AuthProvider) {
   }
 
   async function signIn({ matricula, password }: SignInType) {
-    try {
-      const response = await suapApi.post('/autenticacao/token/', {
-        username: matricula,
-        password,
-      });
+    console.log(matricula, password)
+    const teste = new ClientSuap();
+    const matriculation = matricula
 
-      const { token } = response.data;
+    const teste2 = teste.login(matriculation, password).catch(err => console.log(err));
 
-      try {
-        const getStudent = await saveApi.get('/students/', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+    // try {
+    //   const response = await suapApi.post('/autenticacao/token/', {
+    //     username: matricula,
+    //     password,
+    //   });
 
-        const { student } = getStudent.data;
+    //   const { token } = response.data;
 
-        await AsyncStorage.multiSet([
-          ['@Save:token', token],
-          ['@Save:password', password],
-          ['@Save:student', JSON.stringify(student)],
-        ]);
+    //   try {
+    //     const getStudent = await saveApi.get('/students/', {
+    //       headers: { Authorization: `Bearer ${token}` },
+    //     });
 
-        setData({ student, token });
-      } catch (error) {
-        console.log('erro');
-        console.log(error);
-        // TRATATIVA DE ERRO SUAP ERROR
-      }
-    } catch (error) {
-      console.log('erro');
-      // TRATATIVA DE ERRO
-    }
+    //     const { student } = getStudent.data;
+
+    //     await AsyncStorage.multiSet([
+    //       ['@Save:token', token],
+    //       ['@Save:password', password],
+    //       ['@Save:student', JSON.stringify(student)],
+    //     ]);
+
+    //     setData({ student, token });
+    //   } catch (error) {
+    //     console.log('erro');
+    //     console.log(error);
+    //     // TRATATIVA DE ERRO SUAP ERROR
+    //   }
+    // } catch (error) {
+    //   console.log('erro');
+    //   // TRATATIVA DE ERRO
+    // }
   }
 
   async function signOut() {
