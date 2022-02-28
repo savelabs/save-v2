@@ -40,6 +40,7 @@ const dark = {
     secondary_light: '#EDC86B',
 
     alert: '#369BED',
+    alertSecondary: '#D0342C',
     background: '#121214',
     shape: '#161619',
     border: '#C3C3D2',
@@ -52,6 +53,7 @@ const dark = {
   },
   fonts: {
     main: 'BalooChettan2_700Bold',
+    sub: 'BalooChettan2_500Medium',
     regular: 'Poppins_400Regular',
     medium: 'Poppins_500Medium',
     semibold: 'Poppins_600SemiBold',

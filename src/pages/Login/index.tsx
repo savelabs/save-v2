@@ -22,6 +22,7 @@ import {
 } from './styles';
 import { useAuth } from '../../hooks/auth';
 import { ThemeContext } from 'styled-components/native';
+import { useNavigation } from '@react-navigation/native';
 
 interface FormData {
   matricula: string;
@@ -38,6 +39,7 @@ export function Login() {
   const { signIn } = useAuth();
 
   const { colors } = useContext(ThemeContext)
+  const { navigate } = useNavigation()
   const [loading, setLoading] = useState(false);
 
   const animatedStyles = useAnimatedStyle(() => {
@@ -55,9 +57,10 @@ export function Login() {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm({
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schema),
   });
 
   const keyboardDidShow = () => {
@@ -69,10 +72,16 @@ export function Login() {
     animation.value = 0;
   };
 
-  async function handleRegisterUser(form: FormData) {
-    setLoading(true);
-    signIn(form);
-    setLoading(false);
+  async function onSubmit(data: any) {
+    try {
+      setLoading(true);
+      await signIn(data as FormData);
+      setLoading(false);
+      reset()
+    } catch (err: any) {
+      setLoading(false);
+      reset()
+    }
   }
 
   useEffect(() => {
@@ -132,10 +141,7 @@ export function Login() {
                 <ActivityIndicator size="large" color={colors.background} />
               </Button>
             ) : (
-              <Button
-                title="Entrar"
-                onPress={handleSubmit(handleRegisterUser)}
-              />
+              <Button enabled={true} onPress={() => handleSubmit(onSubmit)()}>Entrar</Button>
             )
           }
           <TouchableOpacity>

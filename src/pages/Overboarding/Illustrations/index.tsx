@@ -33,12 +33,13 @@ export function Illustrations({ translateX, index, title }: IllustrationsProps) 
   const height = Dimensions.get('window').height;
   const inputRange = [(index - 2) * width, index * width, (index + 2) * width];
 
-  const { navigate } = useNavigation();
-  const { removeFirstTime } = useAuth()
+  const { removeFirstTime } = useAuth();
+  const navigation = useNavigation();
 
-  function handleNavigateToLogin() {
-    navigate('Login')
-    removeFirstTime()
+
+  async function handleNavigateToLogin() {
+    await removeFirstTime();
+    navigation.navigate('Login')
   }
 
   const circleStyle = useAnimatedStyle(() => {
@@ -107,9 +108,10 @@ export function Illustrations({ translateX, index, title }: IllustrationsProps) 
         <Description style={textStyle}>
           {title}
         </Description>
-        {index === 2 && (<Button>
-          <ButtonText onPress={handleNavigateToLogin}>Começar</ButtonText>
-        </Button>)}
+        {index === 2 && (
+          <Button onPress={handleNavigateToLogin}>
+            <ButtonText>Começar</ButtonText>
+          </Button>)}
       </Footer>
     </Container>
   )

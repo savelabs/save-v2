@@ -6,20 +6,26 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Overboarding } from '../pages/Overboarding';
 import { Login } from '../pages/Login';
 
-const { Navigator, Screen } = createStackNavigator();
+export type AuthStackParams = {
+  FirstOver: undefined;
+  Login: undefined;
+};
 
 interface AuthRoutesProps {
   isFirstTime: boolean;
 }
 
+const { Navigator, Screen } = createStackNavigator<AuthStackParams>();
+
 export default function AuthRoutes({ isFirstTime }: AuthRoutesProps) {
   return (
     <NavigationContainer>
       <Navigator screenOptions={{ headerShown: false }}>
-        {isFirstTime && (
+        {isFirstTime ? (
           <Screen name="FirstOver" component={Overboarding} />
+        ) : (
+          <Screen name="Login" component={Login} />
         )}
-        <Screen name="Login" component={Login} />
       </Navigator>
     </NavigationContainer>
   );

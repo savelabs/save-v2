@@ -1,35 +1,39 @@
 import { Feather } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { RFValue } from "react-native-responsive-fontsize";
+import { ThemeContext } from 'styled-components/native';
+import { ClienteSuap } from 'suap-sdk-javascript';
 
 import { useAuth } from '../../hooks/auth';
-import { saveApi } from '../../services/api';
 
 import {
   StudentName,
   HeaderContainer,
   Hello,
   NavContainer,
-  UserImage
+  UserImage,
+  Container,
 } from './styles';
 
 export function Home() {
-  const { data, updateUser, renew, signOut, student } = useAuth();
+  const { data, updateUser, renew, student } = useAuth();
   const [loading, setLoading] = useState(false);
+  const { colors } = useContext(ThemeContext);
 
-  const avatarSuap = `https://suap.ifrn.edu.br${student.avatarSuap}`;
+  const avatarSuap = `https://suap.ifrn.edu.br${student.url_foto_150x200}`;
 
   useEffect(() => {
     async function updateUserData() {
       setLoading(true)
       try {
-        const getStudent = await saveApi.get('/students/', {
-          headers: { Authorization: `Bearer ${data.token}` },
-        });
+        const clientStudent = new ClienteSuap({ credenciais: data.credentials, usarApenasApi: true });
 
-        const { student } = getStudent.data;
+        const student = await clientStudent.obterInformaçõesPessoais();
+        const updatedCredentials = await clientStudent.obterCredenciais();
 
-        updateUser(student, data.token);
+        const newData = { student, credentials: updatedCredentials };
+
+        updateUser(newData);
         setLoading(false);
       } catch {
         await renew();
@@ -40,18 +44,22 @@ export function Home() {
   }, []);
 
   return (
-    <HeaderContainer>
-      <Hello>
-        Olá,
-        {" \n"}
-        <StudentName>
-          {student.nomeUsual}
-        </StudentName>
-      </Hello>
-      <NavContainer>
-        <Feather name="bell" size={RFValue(24)} />
-        <UserImage source={{ uri: student.avatarSave ? student.avatarSaveURL : avatarSuap }} />
-      </NavContainer>
-    </HeaderContainer>
+    <>
+      <HeaderContainer>
+        <Hello>
+          Olá,
+          {" \n"}
+          <StudentName>
+            {student.nome_usual}
+          </StudentName>
+        </Hello>
+        <NavContainer>
+          <Feather name="bell" size={RFValue(24)} color={colors.text_white} />
+          <UserImage source={{ uri: avatarSuap }} />
+        </NavContainer>
+      </HeaderContainer>
+      <Container>
+      </Container>
+    </>
   )
 }

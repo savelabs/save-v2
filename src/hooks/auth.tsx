@@ -7,31 +7,15 @@ import React, {
 } from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { saveApi, suapApi } from '../services/api';
-import { ClientSuap } from 'suap-sdk-javascript';
 
-type Student = {
-  notification?: boolean;
-  studentID: string;
-  cpf: string;
-  nomeUsual: string;
-  completeName: string;
-  birthDate: string;
-  emailSuap: string;
-  email: string;
-  avatarSave: string;
-  avatarSuap: string;
-  avatarSaveURL: string;
-  campus: string;
-  situation: string;
-  course: string;
-  class: string;
-  admin: boolean;
-}
+import { AxiosError } from 'axios';
+import { ClienteSuap, Credenciais, InformaçõesPessoais } from 'suap-sdk-javascript';
+import { setItemAsync, getItemAsync } from 'expo-secure-store';
+import { errorAlert } from '../utils/alert';
 
 type AuthState = {
-  student: Student;
-  token: string;
+  student: InformaçõesPessoais;
+  credentials: Credenciais;
 }
 
 type SignInType = {
@@ -40,16 +24,16 @@ type SignInType = {
 }
 
 type AuthContextData = {
-  renew: () => Promise<void>;
-  updateUser: (student: Student, token: string) => void;
+  signIn: ({ matricula, password }: SignInType) => Promise<void>;
   signOut: () => Promise<void>;
+  renew: () => Promise<void>;
+  updateUser: (data: AuthState) => void;
   setPeriodKey: (period: string) => Promise<void>;
   removeFirstTime: () => Promise<void>;
   isUserFirstTime: boolean;
   loading: boolean;
   data: AuthState;
-  student: Student;
-  signIn: ({ matricula, password }: SignInType) => Promise<void>;
+  student: InformaçõesPessoais;
   periodKey: string;
 }
 
@@ -70,23 +54,23 @@ export function AuthProvider({ children }: AuthProvider) {
 
   useEffect(() => {
     async function loadStorageData(): Promise<void> {
-      const [token, student, period, storageFirstTime] = await AsyncStorage.multiGet([
-        '@Save:token',
+      const [storageFirstTime, studentSuapCredentials, student, period,] = await AsyncStorage.multiGet([
+        '@Save:firstTime',
+        '@Save:studentSuapCredentials',
         '@Save:student',
         '@Save:period',
-        '@Save:firsttime'
       ]);
 
-      if (token[1] && student[1]) {
-        setData({ token: token[1], student: JSON.parse(student[1]) });
+      if (storageFirstTime[1] === 'false') {
+        setIsUserFirstTime(false);
+      }
+
+      if (studentSuapCredentials[1] && student[1]) {
+        setData({ credentials: JSON.parse(studentSuapCredentials[1]), student: JSON.parse(student[1]) });
       }
 
       if (period[1]) {
         setStatePeriodKey(JSON.parse(period[1]));
-      }
-
-      if (storageFirstTime[1] === 'false') {
-        setIsUserFirstTime(false);
       }
 
       setLoading(false);
@@ -94,110 +78,84 @@ export function AuthProvider({ children }: AuthProvider) {
     loadStorageData();
   }, []);
 
-  async function removeFirstTime() {
-    setIsUserFirstTime(false);
-    await AsyncStorage.setItem('@Save:firsttime', 'false');
+  async function signIn({ matricula, password }: SignInType) {
+    const client = new ClienteSuap({ usarApenasApi: true });
+
+    try {
+      await client.login(matricula, password);
+
+      const studentSuapInfo = await client.obterInformaçõesPessoais();
+      const studentSuapCredentials = await client.obterCredenciais();
+
+      await setItemAsync('studentCredentials', JSON.stringify({ matricula, password }));
+
+      await AsyncStorage.multiSet([
+        ['@Save:studentSuapCredentials', JSON.stringify(studentSuapCredentials)],
+        ['@Save:student', JSON.stringify(studentSuapInfo)],
+      ]);
+
+      return setData({ student: studentSuapInfo, credentials: studentSuapCredentials });
+    } catch (err: any) {
+      if (err.response.status === 401) {
+        return errorAlert(err.response.data.detail, 'Certifique de que as informações estão corretas.')
+      }
+      if (err.response.status === 503) {
+        return errorAlert('SUAP em manutenção', 'O SUAP encontra-se em manutenção, por favor volte mais tarde.')
+      }
+      return errorAlert(err.response.data.detail, 'Um erro inesperado ocorreu, para mais informações: contato.appsave@gmail.com.')
+    }
   }
 
-  async function signIn({ matricula, password }: SignInType) {
-    console.log(matricula, password)
-    const teste = new ClientSuap();
-    const matriculation = matricula
+  async function renew() {
+    try {
+      const credentials = await getItemAsync('studentCredentials')
+      console.log(credentials)
+      if (!credentials) {
+        await signOut()
+        return errorAlert('Login inválido ou expirado', 'Tente realizar o login novamente.')
+      }
 
-    const teste2 = teste.login(matriculation, password).catch(err => console.log(err));
+      const client = new ClienteSuap({ usarApenasApi: true })
+      const parseCredentials: SignInType = JSON.parse(credentials);
+      await client.login(parseCredentials.matricula, parseCredentials.password);
+      const student = await client.obterInformaçõesPessoais();
 
-    // try {
-    //   const response = await suapApi.post('/autenticacao/token/', {
-    //     username: matricula,
-    //     password,
-    //   });
+      console.log(student)
 
-    //   const { token } = response.data;
+      const updatedCredentials = await client.obterCredenciais();
 
-    //   try {
-    //     const getStudent = await saveApi.get('/students/', {
-    //       headers: { Authorization: `Bearer ${token}` },
-    //     });
+      await AsyncStorage.setItem('@Save:studentSuapCredentials', JSON.stringify(updatedCredentials))
+      return setData({ student, credentials: updatedCredentials });
+    } catch (err) {
+      await signOut()
+      return errorAlert('Sua sessão expirou', 'Tente realizar o login novamente.')
+    }
 
-    //     const { student } = getStudent.data;
-
-    //     await AsyncStorage.multiSet([
-    //       ['@Save:token', token],
-    //       ['@Save:password', password],
-    //       ['@Save:student', JSON.stringify(student)],
-    //     ]);
-
-    //     setData({ student, token });
-    //   } catch (error) {
-    //     console.log('erro');
-    //     console.log(error);
-    //     // TRATATIVA DE ERRO SUAP ERROR
-    //   }
-    // } catch (error) {
-    //   console.log('erro');
-    //   // TRATATIVA DE ERRO
-    // }
   }
 
   async function signOut() {
     await AsyncStorage.multiRemove([
-      '@Save:token',
       '@Save:student',
-      '@Save:password',
+      '@Save:studentSuapCredentials',
     ]);
 
     setData({} as AuthState);
   }
 
-  async function updateUser(student: Student, token: string) {
+  async function updateUser({ student, credentials }: AuthState) {
     setData({
-      student,
-      token,
+      student, credentials
     });
-  }
-
-  async function renew() {
-    const password = await AsyncStorage.getItem('@Save:password');
-    const studentOld = await AsyncStorage.getItem('@Save:student');
-
-    const studentNew = await JSON.parse(studentOld || '');
-
-    if (!studentNew.matricula) {
-      signOut();
-    }
-
-    const { matricula } = studentNew;
-
-    try {
-      const response = await suapApi.post('/autenticacao/token/', {
-        username: matricula,
-        password,
-      });
-
-      const { token } = response.data;
-
-      const getStudent = await saveApi.get('/students/', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      const { student } = getStudent.data;
-
-      await AsyncStorage.multiSet([
-        ['@Save:token', token],
-        ['@Save:password', password],
-        ['@Save:student', JSON.stringify(student)],
-      ]);
-
-      setData({ student, token });
-    } catch (err) {
-      signOut();
-      // ERRO N CONSEGUIU MANTER
-    }
   }
 
   async function setPeriodKey(period: string) {
     await AsyncStorage.setItem('@Save:period', JSON.stringify(period));
   };
+
+  async function removeFirstTime() {
+    setIsUserFirstTime(false);
+    await AsyncStorage.setItem('@Save:firstTime', 'false');
+  }
 
   return (
     <AuthContext.Provider

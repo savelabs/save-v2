@@ -12,7 +12,13 @@ import { Profile } from '../pages/Profile';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { View } from 'react-native';
 
-const { Navigator, Screen } = createBottomTabNavigator();
+export type AppBottomTabsParams = {
+  Home: undefined;
+  Study: undefined;
+  Profile: undefined;
+};
+
+const { Navigator, Screen } = createBottomTabNavigator<AppBottomTabsParams>();
 
 export default function AppRoutes() {
   const { colors } = useContext(ThemeContext);

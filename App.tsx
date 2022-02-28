@@ -2,6 +2,8 @@ import 'react-native-gesture-handler';
 import React from 'react';
 
 import AppLoading from 'expo-app-loading';
+import FlashMessage from "react-native-flash-message";
+
 import { useFonts, BalooChettan2_700Bold, BalooChettan2_500Medium } from '@expo-google-fonts/baloo-chettan-2';
 import {
   Poppins_400Regular,
@@ -29,6 +31,7 @@ export default function App() {
   return (
     <AppProvider>
       <Routes />
+      <FlashMessage position="top" />
     </AppProvider>
   );
 }
