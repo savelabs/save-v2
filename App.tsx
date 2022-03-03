@@ -13,6 +13,8 @@ import {
 } from '@expo-google-fonts/poppins';
 import { Routes } from './src/routes/index.routes';
 import { AppProvider } from './src/hooks';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { LogBox } from 'react-native';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -28,10 +30,15 @@ export default function App() {
     return <AppLoading />;
   }
 
+  LogBox.ignoreLogs(['Setting a timer']);
+  const client = new QueryClient();
+
   return (
-    <AppProvider>
-      <Routes />
-      <FlashMessage position="top" />
-    </AppProvider>
+    <QueryClientProvider client={client}>
+      <AppProvider>
+        <Routes />
+        <FlashMessage position="top" />
+      </AppProvider>
+    </QueryClientProvider>
   );
 }

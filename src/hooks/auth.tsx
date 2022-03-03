@@ -109,7 +109,6 @@ export function AuthProvider({ children }: AuthProvider) {
   async function renew() {
     try {
       const credentials = await getItemAsync('studentCredentials')
-      console.log(credentials)
       if (!credentials) {
         await signOut()
         return errorAlert('Login inválido ou expirado', 'Tente realizar o login novamente.')
@@ -119,8 +118,6 @@ export function AuthProvider({ children }: AuthProvider) {
       const parseCredentials: SignInType = JSON.parse(credentials);
       await client.login(parseCredentials.matricula, parseCredentials.password);
       const student = await client.obterInformaçõesPessoais();
-
-      console.log(student)
 
       const updatedCredentials = await client.obterCredenciais();
 

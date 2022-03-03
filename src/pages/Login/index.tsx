@@ -39,7 +39,6 @@ export function Login() {
   const { signIn } = useAuth();
 
   const { colors } = useContext(ThemeContext)
-  const { navigate } = useNavigation()
   const [loading, setLoading] = useState(false);
 
   const animatedStyles = useAnimatedStyle(() => {

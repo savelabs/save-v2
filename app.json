@@ -14,10 +14,13 @@
     "primaryColor": "#5F2F8E",
     "notification": {
       "icon": "./assets/notify.png",
-      "color":  "#5F2F8E"
+      "color": "#5F2F8E"
     },
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "android": {
+      "package": "com.iagonobre.Save"
+    }
   }
 }

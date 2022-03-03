@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { ClienteSuap, PeríodoLetivo, Boletim } from 'suap-sdk-javascript';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { Boletim, ClienteSuap, PeríodoLetivo } from 'suap-sdk-javascript';
 import { useAuth } from '../../hooks/auth';
 import { Feather } from '@expo/vector-icons';
 import { ThemeContext } from 'styled-components/native';
@@ -21,19 +21,21 @@ import {
   NavbarButton,
   ScrollContainer,
 } from './styles';
+
 import { Grade } from './Grade';
+
+type Pages = "grade" | "materials" | "classes" | "information"
 
 export function Study() {
   const { data, renew, setPeriodKey, periodKey } = useAuth();
-
   const [periodSelected, setPeriodSelected] = useState('');
+
   const [loading, setLoading] = useState(true);
   const [periods, setPeriods] = useState<PeríodoLetivo[]>();
 
+  const [page, setPage] = useState<Pages>('grade');
 
   const { colors } = useContext(ThemeContext);
-
-
 
   async function handleSelectPeriod(period: string) {
     setPeriodSelected(period)
@@ -59,8 +61,25 @@ export function Study() {
         setLoading(false);
       }
     }
+
     getPeriods()
   }, []);
+
+  const handleGetPage = useMemo(() => {
+    if (!page) {
+      return null;
+    }
+
+    if (page === 'grade') {
+      return <Grade period={periodSelected} credentials={data.credentials} />
+    }
+
+    return <Feather
+      name="info"
+      size={RFValue(24)}
+      color={page === 'information' ? colors.alert : colors.primary_dark}
+    />
+  }, [page, data, periodSelected])
 
   if (loading) {
     return <PeriodText>Carregando.....</PeriodText>
@@ -69,7 +88,6 @@ export function Study() {
   return (
     <ScrollContainer>
       <Container>
-
         <PeriodContainer>
           <PeriodScroll
             horizontal
@@ -104,28 +122,45 @@ export function Study() {
           </Picker>
         </PickerContainer>
         <NavbarContainer>
-          <NavbarButton>
+          <NavbarButton onPress={() => setPage('grade')}>
             <NavbarGradient>
-              <Feather name="file-text" size={RFValue(24)} color={colors.primary_dark} />
+              <Feather
+                name="file-text"
+                size={RFValue(24)}
+                color={page === 'grade' ? colors.alert : colors.primary_dark}
+              />
             </NavbarGradient>
           </NavbarButton>
-          <NavbarButton>
+          <NavbarButton onPress={() => setPage('materials')}>
             <NavbarGradient>
-              <Feather name="paperclip" size={RFValue(24)} color={colors.primary_dark} />
+              <Feather
+                name="paperclip"
+                size={RFValue(24)}
+                color={page === 'materials' ? colors.alert : colors.primary_dark}
+              />
             </NavbarGradient>
           </NavbarButton>
-          <NavbarButton>
+          <NavbarButton onPress={() => setPage('classes')}>
             <NavbarGradient>
-              <Feather name="edit-3" size={RFValue(24)} color={colors.primary_dark} />
+              <Feather
+                name="edit-3"
+                size={RFValue(24)}
+                color={page === 'classes' ? colors.alert : colors.primary_dark}
+              />
             </NavbarGradient>
           </NavbarButton>
-          <NavbarButton>
+          <NavbarButton onPress={() => setPage('information')}>
             <NavbarGradient>
-              <Feather name="info" size={RFValue(24)} color={colors.primary_dark} />
+              <Feather
+                name="info"
+                size={RFValue(24)}
+                color={page === 'information' ? colors.alert : colors.primary_dark}
+              />
             </NavbarGradient>
           </NavbarButton>
         </NavbarContainer>
-        <Grade period={periodSelected} credentials={data.credentials}></Grade>
+
+        {handleGetPage}
 
       </Container>
     </ScrollContainer>

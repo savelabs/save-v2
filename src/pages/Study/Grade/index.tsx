@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Boletim, ClienteSuap, Credenciais } from 'suap-sdk-javascript';
 import { errorAlert } from '../../../utils/alert';
 
+import { useQuery } from 'react-query';
+
 import {
   GradeTitle,
   TextDescription,
@@ -9,7 +11,6 @@ import {
   GradeHeader,
   ColumnTitle,
   SubjectPeriod,
-  GradeList,
   GradeBox,
   SubjectTitle,
   GradeValueContainer,
@@ -23,42 +24,28 @@ type GradeProps = {
 }
 
 export function Grade({ period, credentials }: GradeProps) {
-  const [grades, setGrades] = useState<Boletim[]>();
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function handleGetGrades() {
-      try {
-        setLoading(true);
-        const periodFormatted = period.split('.')
+  const periodFormatted = period.split('.')
 
-        const clientStudent = new ClienteSuap({
-          credenciais: credentials,
-          usarApenasApi: true
-        });
+  const clientStudent = new ClienteSuap({
+    credenciais: credentials,
+    usarApenasApi: true
+  });
 
-        const studentGrades = await clientStudent.obterNotas(
-          Number(periodFormatted[0]),
-          Number(periodFormatted[1])
-        );
+  const { data: grades, isError, error, isLoading } = useQuery<Boletim[]>('grades', async () => {
+    const studentGrades = await clientStudent.obterNotas(
+      Number(periodFormatted[0]),
+      Number(periodFormatted[1])
+    );
+    return studentGrades;
+  })
 
-        setGrades(studentGrades);
-        console.log(studentGrades);
+  if (isError) {
+    console.log(error)
+    return <GradeTitle>Um erro ocorreu...</GradeTitle>
+  }
 
-        setLoading(false);
-      } catch (err: any) {
-        setLoading(false);
-        if (err.response.status === 404) {
-          console.log('teste');
-          return setGrades(undefined);
-        }
-        return errorAlert(err.response.data.detail, 'Algum erro ocorreu.')
-      }
-    }
-    handleGetGrades()
-  }, [period, credentials])
-
-  if (loading) {
+  if (isLoading) {
     return <GradeTitle>Carregando...</GradeTitle>
   }
 
@@ -78,43 +65,47 @@ export function Grade({ period, credentials }: GradeProps) {
           </SubjectPeriod>
         </GradeHeader>
 
-        <GradeList
-          data={grades}
-          renderItem={({ item }) => {
-            const subjectNameArray = item.disciplina.toUpperCase().split('- ')
-            const subjectName = subjectNameArray[1];
+        {grades?.map((item) => {
+          const subjectNameArray = item.disciplina.toUpperCase().split('- ')
+          const subjectName = subjectNameArray[1];
 
-            const gradeOne = item.nota_etapa_1.nota;
-            const gradeTwo = item.nota_etapa_2.nota;
-            const gradeThree = item.nota_etapa_3.nota;
-            const gradeFour = item.nota_etapa_4.nota;
+          const gradeOne = item.segundo_semestre
+            ? null
+            : item.nota_etapa_1.nota;
+          const gradeTwo = item.segundo_semestre
+            ? null
+            : item.nota_etapa_2.nota;
+          const gradeThree = item.segundo_semestre
+            ? item.nota_etapa_1.nota
+            : item.nota_etapa_3.nota;
+          const gradeFour = item.segundo_semestre
+            ? item.nota_etapa_2.nota
+            : item.nota_etapa_4.nota;
 
-            return (
-              <GradeBox>
-                <SubjectTitle>
-                  {subjectName}
-                </SubjectTitle>
-                <GradeValueContainer>
-                  <GradeValue>
-                    <GradeText>{gradeOne || '-'}</GradeText>
-                  </GradeValue>
-                  <GradeValue>
-                    <GradeText>{gradeTwo || '-'}</GradeText>
-                  </GradeValue>
-                  <GradeValue>
-                    <GradeText>{gradeThree || '-'}</GradeText>
-                  </GradeValue>
-                  <GradeValue>
-                    <GradeText>{gradeFour || '-'}</GradeText>
-                  </GradeValue>
-                </GradeValueContainer>
-              </GradeBox>
-            )
-          }}
-          keyExtractor={(item) => item.disciplina}
-        />
-
+          return (
+            <GradeBox key={item.codigo_diario}>
+              <SubjectTitle>
+                {subjectName}
+              </SubjectTitle>
+              <GradeValueContainer>
+                <GradeValue>
+                  <GradeText>{gradeOne || '-'}</GradeText>
+                </GradeValue>
+                <GradeValue>
+                  <GradeText>{gradeTwo || '-'}</GradeText>
+                </GradeValue>
+                <GradeValue>
+                  <GradeText>{gradeThree || '-'}</GradeText>
+                </GradeValue>
+                <GradeValue>
+                  <GradeText>{gradeFour || '-'}</GradeText>
+                </GradeValue>
+              </GradeValueContainer>
+            </GradeBox>
+          );
+        })}
       </GradeContainer>
     </>
   )
 }
+
