@@ -1,7 +1,7 @@
 import {  RectButton } from "react-native-gesture-handler";
 import { RFValue } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
-import { ShapeGradient } from "../../../components/ShapeGradient";
+import { ShapeGradient } from "../../../../components/ShapeGradient";
 
 export const GradeTitle = styled.Text`
   font-family: ${({ theme }) => theme.fonts.main};

@@ -1,4 +1,5 @@
 const light = {
+  theme: "light",
   colors: {
     primary: '#69349E',
     primary_dark: '#5F2F8E',
@@ -30,6 +31,7 @@ const light = {
 };
 
 const dark = {
+  theme: "dark",
   colors: {
     primary: '#69349E',
     primary_dark: '#5F2F8E',
@@ -43,7 +45,7 @@ const dark = {
     alertSecondary: '#D0342C',
     background: '#121214',
     shape: '#161619',
-    border: '#C3C3D2',
+    border: '#888893',
 
     text: '#DFD4F8',
     text_white: '#F0F0FC',

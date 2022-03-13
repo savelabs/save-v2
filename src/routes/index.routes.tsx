@@ -4,10 +4,10 @@ import AppLoading from 'expo-app-loading';
 import { ThemeProvider } from 'styled-components';
 import { light, dark } from '../global/styles/themes';
 
-import AppStackRoutes from './appstack.routes';
 import AuthRoutes from './auth.routes';
 
 import { useAuth } from '../hooks/auth';
+import AppRoutes from './app.routes';
 
 export function Routes() {
   const { student, loading, isUserFirstTime } = useAuth();
@@ -18,7 +18,7 @@ export function Routes() {
 
   return (
     <ThemeProvider theme={light}>
-      {student ? <AppStackRoutes /> : <AuthRoutes isFirstTime={isUserFirstTime} />}
+      {student ? <AppRoutes /> : <AuthRoutes isFirstTime={isUserFirstTime} />}
     </ThemeProvider>
   );
 };

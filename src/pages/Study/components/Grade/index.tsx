@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Boletim, ClienteSuap, Credenciais } from 'suap-sdk-javascript';
-import { errorAlert } from '../../../utils/alert';
+import React from 'react';
+import { Boletim, ClienteSuap } from 'suap-sdk-javascript';
 
 import { useQuery } from 'react-query';
+import { useAuth } from '../../../../hooks/auth';
+import { Nothing } from '../Nothing';
 
 import {
   GradeTitle,
@@ -20,32 +21,48 @@ import {
 
 type GradeProps = {
   period: string;
-  credentials: Credenciais;
 }
 
-export function Grade({ period, credentials }: GradeProps) {
+export function Grade({ period }: GradeProps) {
+  const { data, setClassKey } = useAuth();
+
+  if (!period) {
+    return (
+      <Nothing
+        title="Boletim Geral"
+        description="Selecione um período letivo para continuar"
+      />
+    )
+  }
 
   const periodFormatted = period.split('.')
 
   const clientStudent = new ClienteSuap({
-    credenciais: credentials,
+    credenciais: data.credentials,
     usarApenasApi: true
   });
 
-  const { data: grades, isError, error, isLoading } = useQuery<Boletim[]>('grades', async () => {
+  const {
+    data: grades,
+    isError,
+    isLoading,
+    isFetching,
+    refetch
+  } = useQuery<Boletim[]>(['grades', period], async () => {
     const studentGrades = await clientStudent.obterNotas(
       Number(periodFormatted[0]),
       Number(periodFormatted[1])
     );
     return studentGrades;
+  }, {
+    enabled: !!period
   })
 
   if (isError) {
-    console.log(error)
     return <GradeTitle>Um erro ocorreu...</GradeTitle>
   }
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return <GradeTitle>Carregando...</GradeTitle>
   }
 
@@ -83,7 +100,7 @@ export function Grade({ period, credentials }: GradeProps) {
             : item.nota_etapa_4.nota;
 
           return (
-            <GradeBox key={item.codigo_diario}>
+            <GradeBox onPress={() => setClassKey({ id: Number(item.codigo_diario), description: subjectName })} key={item.codigo_diario}>
               <SubjectTitle>
                 {subjectName}
               </SubjectTitle>

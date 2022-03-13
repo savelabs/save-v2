@@ -8,7 +8,6 @@ import React, {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { AxiosError } from 'axios';
 import { ClienteSuap, Credenciais, InformaçõesPessoais } from 'suap-sdk-javascript';
 import { setItemAsync, getItemAsync } from 'expo-secure-store';
 import { errorAlert } from '../utils/alert';
@@ -23,11 +22,17 @@ type SignInType = {
   password: string;
 }
 
+type SelectedClassProps = {
+  id?: number,
+  description?: string
+}
+
 type AuthContextData = {
   signIn: ({ matricula, password }: SignInType) => Promise<void>;
   signOut: () => Promise<void>;
   renew: () => Promise<void>;
   updateUser: (data: AuthState) => void;
+  setClassKey: (classProps: SelectedClassProps) => void;
   setPeriodKey: (period: string) => Promise<void>;
   removeFirstTime: () => Promise<void>;
   isUserFirstTime: boolean;
@@ -35,6 +40,7 @@ type AuthContextData = {
   data: AuthState;
   student: InformaçõesPessoais;
   periodKey: string;
+  classKey: SelectedClassProps;
 }
 
 type AuthProvider = {
@@ -48,6 +54,7 @@ export const AuthContext = createContext<AuthContextData>(
 export function AuthProvider({ children }: AuthProvider) {
   const [data, setData] = useState<AuthState>({} as AuthState);
   const [periodKey, setStatePeriodKey] = useState('');
+  const [classKey, setStateClassKey] = useState<SelectedClassProps>({});
 
   const [isUserFirstTime, setIsUserFirstTime] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -146,7 +153,12 @@ export function AuthProvider({ children }: AuthProvider) {
   }
 
   async function setPeriodKey(period: string) {
-    await AsyncStorage.setItem('@Save:period', JSON.stringify(period));
+    setStatePeriodKey(period);
+    AsyncStorage.setItem('@Save:period', JSON.stringify(period));
+  };
+
+  async function setClassKey(classProps: SelectedClassProps) {
+    setStateClassKey(classProps);
   };
 
   async function removeFirstTime() {
@@ -167,7 +179,9 @@ export function AuthProvider({ children }: AuthProvider) {
         loading,
         data,
         student: data.student,
-        periodKey
+        periodKey,
+        setClassKey,
+        classKey
       }}
     >
       {children}
