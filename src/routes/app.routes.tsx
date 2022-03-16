@@ -1,18 +1,19 @@
 import React, { useContext } from 'react';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
 
 import { Feather } from '@expo/vector-icons';
 import { ThemeContext } from 'styled-components';
 
 import { Home } from '../pages/Home';
-import { Grades } from '../pages/Study/Grades';
-import { Profile } from '../pages/Profile';
 
 import { RFValue } from 'react-native-responsive-fontsize';
 import { View } from 'react-native';
-import AppStackRoutes from './appstack.routes';
-import { NavigationContainer } from '@react-navigation/native';
+
+import ProfileStackRoutes from './profilestack.routes';
+import StudyStackRoutes from './studystack.routes';
+
 
 export type AppBottomTabsParams = {
   Home: undefined;
@@ -56,7 +57,7 @@ export default function AppRoutes() {
       >
         <Screen
           name="Study"
-          component={AppStackRoutes}
+          component={StudyStackRoutes}
         />
         <Screen
           name="Home"
@@ -64,7 +65,7 @@ export default function AppRoutes() {
         />
         <Screen
           name="Profile"
-          component={Profile}
+          component={ProfileStackRoutes}
         />
       </Navigator>
     </NavigationContainer>

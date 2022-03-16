@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 
 import { AuthProvider } from './auth';
+import { ThemeProvider } from './theme';
 
 type AppProvider = {
   children: ReactNode
@@ -9,7 +10,9 @@ type AppProvider = {
 export function AppProvider({ children }: AppProvider) {
   return (
     <AuthProvider>
-      {children}
+      <ThemeProvider>
+        {children}
+      </ThemeProvider>
     </AuthProvider>
   )
 }

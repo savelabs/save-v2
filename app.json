@@ -20,7 +20,11 @@
       "**/*"
     ],
     "android": {
-      "package": "com.iagonobre.Save"
+      "package": "com.iagonobre.Save",
+      "userInterfaceStyle": "automatic"
+    },
+    "ios": {
+      "userInterfaceStyle": "automatic"
     }
   }
 }

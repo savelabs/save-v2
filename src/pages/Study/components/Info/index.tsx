@@ -29,6 +29,7 @@ import {
   InfoLocalContainer,
   InfoMediumText,
 } from './styles';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 type InfoProps = {
   classID?: number;
@@ -37,6 +38,8 @@ type InfoProps = {
 export function Info({ classID }: InfoProps) {
   const { data } = useAuth();
   const { colors } = useContext(ThemeContext);
+
+
 
   if (!classID) {
     return (
@@ -74,7 +77,7 @@ export function Info({ classID }: InfoProps) {
   }
 
   if (isLoading || isFetching) {
-    return <InfoTitle>eooe</InfoTitle>;
+    return <LoadingSpinner />;
   }
 
   function handleOpenEmail(teacher: string) {
@@ -91,10 +94,12 @@ export function Info({ classID }: InfoProps) {
         </InfoHeader>
 
         {infos?.professores.map(teacher => {
+          const teacherImage = teacher.foto.substring(0, 5) === 'https' ? teacher.foto : `https://suap.ifrn.edu.br${teacher.foto}`;
+
           return (
             <TeacherContainer key={teacher.matricula}>
               <TeacherProfile>
-                <TeacherImage source={{ uri: `https://suap.ifrn.edu.br${teacher.foto}` }} />
+                <TeacherImage source={{ uri: teacherImage }} />
                 <TeacherInfos>
                   <TeacherName>{teacher.nome}</TeacherName>
                   <TeacherNumber>{teacher.matricula}</TeacherNumber>

@@ -18,6 +18,7 @@ import {
   GradeValue,
   GradeText,
 } from './styles';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 type GradeProps = {
   period: string;
@@ -59,11 +60,16 @@ export function Grade({ period }: GradeProps) {
   })
 
   if (isError) {
-    return <GradeTitle>Um erro ocorreu...</GradeTitle>
+    return (
+      <Nothing
+        title="Boletim Geral"
+        description="Algum erro inesperado ocorreu"
+      />
+    )
   }
 
   if (isLoading || isFetching) {
-    return <GradeTitle>Carregando...</GradeTitle>
+    return <LoadingSpinner />;
   }
 
   return (

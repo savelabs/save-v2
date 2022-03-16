@@ -4,6 +4,7 @@ import { ClienteSuap, InformaçõesTurmaVirtual } from 'suap-sdk-javascript';
 import { useQuery } from 'react-query';
 import { useAuth } from '../../../../hooks/auth';
 import { Nothing } from '../Nothing';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 import {
   ClassTitle,
@@ -57,7 +58,7 @@ export function ClassData({ classID }: ClassDataProps) {
     )
   }
   if (isLoading || isFetching) {
-    return <ClassDataText>Teste</ClassDataText>
+    return <LoadingSpinner />;
   }
 
   return (

@@ -18,32 +18,31 @@ export const PeriodScroll = styled(FlatList as new () => FlatList<PeríodoLetivo
 `
 
 export const PeriodContainer = styled.View`
-  height: ${RFValue(38)}px;
+  height: ${RFValue(42)}px;
 `
 
 export const PeriodButtonSelected = styled(ShapeGradient)<PeriodButtonProps>`
-  padding: ${RFValue(9)}px ${RFValue(18)}px ${RFValue(9)}px ${RFValue(18)}px;
+  padding: ${RFValue(8)}px ${RFValue(18)}px;
   border-radius: ${RFValue(16)}px;
   margin-left: ${RFValue(14)}px;
-  display: flex;
   align-items: center;
   justify-content: center;
   elevation: 2;
   margin-top: ${RFValue(3)}px;
+  margin-bottom: ${RFValue(3)}px;
   ${(props) => props.isFirstElement && css`margin-left: 1px;`};
 `
 
 export const PeriodButton = styled.TouchableOpacity<PeriodButtonProps>`
   background-color: ${({ theme }) => theme.colors.shape};
-  height: ${RFValue(32)}px;
-  padding: ${RFValue(9)}px ${RFValue(18)}px ${RFValue(9)}px ${RFValue(18)}px;
+  padding: ${RFValue(8)}px ${RFValue(18)}px;
   border-radius: ${RFValue(16)}px;
   margin-left: ${RFValue(14)}px;
-  display: flex;
   align-items: center;
   justify-content: center;
-  elevation: 3;
+  elevation: 2;
   margin-top: ${RFValue(3)}px;
+  margin-bottom: ${RFValue(3)}px;
   ${(props) => props.isFirstElement && css`margin-left: 1px;`};
 `
 
@@ -247,6 +246,7 @@ export const ReturnContainer = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
   left: -${RFValue(6)}px;
+  width: ${RFValue(128)}px;
 `
 
 export const ReturnText = styled.Text`

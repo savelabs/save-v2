@@ -9,6 +9,7 @@ import { Materials } from '../pages/Study/Materials';
 import { Classes } from '../pages/Study/SchoolClasses';
 import { Infos } from '../pages/Study/Infos';
 import { Grades } from '../pages/Study/Grades';
+import { ProfileData } from '../pages/Profile/ProfileData';
 
 export type AppStackParams = {
   AppRoutes: undefined;
@@ -16,12 +17,12 @@ export type AppStackParams = {
   Classes: undefined;
   Infos: undefined;
   Grades: undefined;
+  ProfileData: undefined;
 };
 
 const { Navigator, Screen, Group } = createStackNavigator<AppStackParams>();
 
-export default function AppStackRoutes() {
-
+export default function StudyStackRoutes() {
   return (
     <Navigator screenOptions={{ headerShown: false }}>
       <Group screenOptions={{ animationEnabled: false }}>

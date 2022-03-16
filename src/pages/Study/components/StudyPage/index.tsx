@@ -14,8 +14,13 @@ import { Material } from '../Material';
 import { ClassData } from '../ClassData';
 import { GradeSubject } from '../GradeSubject';
 import { Info } from '../Info';
+import { LoadingHeader } from '../LoadingHeader';
+
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Modal, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { Nothing } from '../Nothing';
+
+import { errorAlert } from '../../../../utils/alert';
 
 import {
   PeriodContainer,
@@ -43,6 +48,7 @@ import {
   ReturnContainer,
   ReturnText,
 } from './styles'
+
 
 type Pages = "grade" | "materials" | "classes" | "information"
 type NavigationProps = "Grades" | "Materials" | "Classes" | "Infos"
@@ -109,6 +115,7 @@ export function StudyPage({ page }: HeaderProps) {
   const {
     data: classes,
     isError: isErrorClasses,
+    error,
     isFetching: isFetchingClasses,
     refetch: refetchClasses
   } = useQuery<TurmaVirtual[] | undefined>(['classes', selectedPeriodKey], async () => {
@@ -123,12 +130,29 @@ export function StudyPage({ page }: HeaderProps) {
     enabled: !!selectedPeriodKey,
   })
 
-  if (isErrorPeriod) {
-    return <PickerTitle>Algum erro ocorreu</PickerTitle>;
+  const errorType: any = error;
+  const periodUnavailable = errorType?.response.data.detail === 'Não encontrado.'
+
+  if (periodUnavailable) {
+    setSelectedClass({});
+    setClassKey({})
+    setSelectedPeriodKey('');
+    setPeriodKey('')
+
+    errorAlert('Selecione outro período letivo', 'Período letivo inválido ou não registrado');
   }
 
-  if (isLoadingPeriod || isFetchingPeriod) {
-    return <PickerTitle>Carregando</PickerTitle>;
+  if (isErrorPeriod || isErrorClasses && !periodUnavailable) {
+    return (
+      <Nothing
+        title="Estudos"
+        description="Algum erro inesperado ocorreu"
+      />
+    )
+  }
+
+  if (isLoadingPeriod || isFetchingPeriod || isFetchingClasses) {
+    return <LoadingHeader />;
   }
 
   function handleNavigate(navigatePage: NavigationProps) {
@@ -174,6 +198,7 @@ export function StudyPage({ page }: HeaderProps) {
         </ModalContainer>
       </Modal>
 
+
       {page === 'grade' && selectedClass.id ? (
         <ReturnContainer onPress={() => handleRemoveClass()}>
           <Feather name="chevron-left" size={RFValue(24)} color={colors.primary_dark} />
@@ -204,8 +229,7 @@ export function StudyPage({ page }: HeaderProps) {
           >
           </PeriodScroll>
         </PeriodContainer>
-      )
-      }
+      )}
 
       <PickerTitle>Matéria</PickerTitle>
       <PickerContainer

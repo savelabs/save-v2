@@ -10,6 +10,7 @@ import { ThemeContext } from 'styled-components/native';
 
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Nothing } from '../Nothing';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 import {
   MaterialTitle,
@@ -64,7 +65,7 @@ export function Material({ classID }: MaterialProps) {
   }
 
   if (isLoading || isFetching) {
-    return <MaterialTitle>Carregando...</MaterialTitle>
+    return <LoadingSpinner />;
   }
 
   function handleDownloadFile(url: string) {

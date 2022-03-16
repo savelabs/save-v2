@@ -51,6 +51,7 @@ export const TeacherImage = styled.Image`
   width: ${RFValue(48)}px;
   height: ${RFValue(48)}px;
   border-radius: ${RFValue(24)}px;
+  background-color: ${({ theme }) => theme.colors.border}
 `
 
 export const TeacherInfos = styled.View`

@@ -20,8 +20,6 @@ export function Home() {
   const [loading, setLoading] = useState(false);
   const { colors } = useContext(ThemeContext);
 
-  const avatarSuap = `https://suap.ifrn.edu.br${student.url_foto_150x200}`;
-
   useEffect(() => {
     async function updateUserData() {
       setLoading(true)
@@ -42,6 +40,12 @@ export function Home() {
     }
     updateUserData()
   }, []);
+
+  if (loading) {
+    return null;
+  }
+
+  const avatarSuap = student.url_foto_150x200.substring(0, 5) === 'https' ? student.url_foto_150x200 : `https://suap.ifrn.edu.br${student.url_foto_150x200}`;
 
   return (
     <>

@@ -31,6 +31,7 @@ import {
   CardBar,
   ProgressBar
 } from './styles';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 type GradeSubjectProps = {
   period: string;
@@ -89,7 +90,7 @@ export function GradeSubject({ classID, period }: GradeSubjectProps) {
     )
   }
   if (isLoading || isFetching) {
-    return <SubjectRegular>1° BI</SubjectRegular>;
+    return <LoadingSpinner />;
   }
 
   const currentSubject = grades?.find((grade) => grade.codigo_diario === String(classID));
