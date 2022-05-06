@@ -15,3 +15,19 @@ export function errorAlert(title: string, message: string) {
     },
   })
 }
+
+export function warningAlert(title: string, message: string) {
+  showMessage({
+    message: title,
+    description: message,
+    type: "info",
+    duration: 4000,
+    backgroundColor: '#369BED',
+    titleStyle: {
+      fontFamily: 'BalooChettan2_700Bold'
+    },
+    textStyle: {
+      fontFamily: 'Poppins_400Regular'
+    },
+  })
+}

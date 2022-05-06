@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { ClienteSuap, InformaçõesTurmaVirtual } from 'suap-sdk-javascript';
+import { InformaçõesTurmaVirtual, ClienteSuap } from 'suap-sdk-javascript';
 
 import { useQuery } from 'react-query';
 import { useAuth } from '../../../../hooks/auth';

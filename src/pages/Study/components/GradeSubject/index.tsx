@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Boletim, ClienteSuap } from 'suap-sdk-javascript';
 
 import { useQuery } from 'react-query';
 import { useAuth } from '../../../../hooks/auth';
 import { Nothing } from '../Nothing';
 import { AcademicSituation } from '../GetAcademicSituation'
+
+import { LoadingSpinner } from '../LoadingSpinner';
+import { Feather } from '@expo/vector-icons';
+import { RFValue } from 'react-native-responsive-fontsize';
+
+import { ThemeContext } from 'styled-components/native';
+import { useNavigation } from '@react-navigation/native';
 
 import {
   GradeSubjectContainer,
@@ -19,19 +26,13 @@ import {
 
   CardContainer,
   DetailsHeader,
-  StepHeader,
-  Details,
-  SubjectMedium,
   DetailsButton,
-  DetailsButtonText,
-  DetailsRegular,
   CardTitle,
   CardPadding,
 
   CardBar,
   ProgressBar
 } from './styles';
-import { LoadingSpinner } from '../LoadingSpinner';
 
 type GradeSubjectProps = {
   period: string;
@@ -40,6 +41,8 @@ type GradeSubjectProps = {
 
 export function GradeSubject({ classID, period }: GradeSubjectProps) {
   const { data } = useAuth();
+  const { colors } = useContext(ThemeContext);
+  const { navigate } = useNavigation();
 
   if (!period) {
     return (
@@ -121,10 +124,8 @@ export function GradeSubject({ classID, period }: GradeSubjectProps) {
     : currentSubject.nota_etapa_4.nota;
 
   return (
-
     <GradeSubjectContainer>
       <SubjectTitle>{subject}</SubjectTitle>
-
       <GradeSquadContainer>
         <GradeSquadBox>
           <GradeSquad>
@@ -152,6 +153,19 @@ export function GradeSubject({ classID, period }: GradeSubjectProps) {
         </GradeSquadBox>
       </GradeSquadContainer>
 
+      {period === '2022.1' && (
+        <CardContainer>
+          <DetailsButton onPress={() => navigate('DetailGrades', {
+            classID
+          })}>
+            <DetailsHeader>
+              <SubjectTitle>Detalhar Notas</SubjectTitle>
+              <Feather name="plus-circle" size={RFValue(24)} color={colors.primary_dark} />
+            </DetailsHeader>
+          </DetailsButton>
+        </CardContainer>
+      )}
+
       <CardContainer>
         <CardPadding>
           <CardTitle>Situação</CardTitle>
@@ -166,31 +180,6 @@ export function GradeSubject({ classID, period }: GradeSubjectProps) {
             nota_etapa_4={currentSubject.nota_etapa_4}
           />
         </CardPadding>
-      </CardContainer>
-
-      <CardContainer>
-        <DetailsButton>
-          <DetailsHeader>
-            <SubjectTitle>Detalhamento das Notas</SubjectTitle>
-          </DetailsHeader>
-          <StepHeader>
-            <SubjectRegular>Etapa 1 - Média Aritmética</SubjectRegular>
-          </StepHeader>
-          <Details>
-            <DetailsRegular>
-              Atividades Atividades Atividades Atividades{'\n'}
-              <SubjectMedium>Tipo: </SubjectMedium>Prova{'\n'}
-              <SubjectMedium>Peso: </SubjectMedium>2
-            </DetailsRegular>
-            <GradeSquadBox>
-              <GradeSquad>
-                <GradeText>100</GradeText>
-              </GradeSquad>
-            </GradeSquadBox>
-          </Details>
-
-          <DetailsButtonText>VER TODAS</DetailsButtonText>
-        </DetailsButton>
       </CardContainer>
 
       <CardContainer withProgressBar={true}>

@@ -1,9 +1,9 @@
-import { FlatList } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import { RFValue } from "react-native-responsive-fontsize";
 import styled, { css } from "styled-components/native";
-import { PeríodoLetivo, TurmaVirtual } from "suap-sdk-javascript";
+import { PeríodoLetivo, TurmaVirtual } from 'suap-sdk-javascript';
 import { ShapeGradient } from "../../../../components/ShapeGradient";
+import { FlatList } from "react-native";
 
 type PeriodButtonProps = {
   isFirstElement?: boolean,

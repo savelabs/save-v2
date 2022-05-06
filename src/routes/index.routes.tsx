@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AppLoading from 'expo-app-loading';
 
 import { ThemeProvider } from 'styled-components';
@@ -8,17 +8,30 @@ import AuthRoutes from './auth.routes';
 
 import { useAuth } from '../hooks/auth';
 import AppRoutes from './app.routes';
-import { useColorScheme } from 'react-native';
+import { useColorScheme, View } from 'react-native';
 import { useThemeMode } from '../hooks/theme';
 
+import * as LocalAuthentication from 'expo-local-authentication';
+
 export function Routes() {
-  const { student, loading, isUserFirstTime } = useAuth();
+  const { student, loading, isUserFirstTime, isUserEnrolled, setUserEnrolled } = useAuth();
   const autoTheme = useColorScheme()
   const { theme } = useThemeMode()
 
   if (loading) {
-    return <AppLoading />;
+    return <AppLoading autoHideSplash={false} />;
   }
+
+
+  if (student && !isUserEnrolled) {
+    LocalAuthentication.authenticateAsync().then((res) => {
+      if (res.success) {
+        setUserEnrolled(true)
+      }
+    })
+    return <View style={{ flex: 1, backgroundColor: light.colors.primary }} />;
+  }
+
   return (
     <ThemeProvider
       theme={

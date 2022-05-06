@@ -86,41 +86,10 @@ export const CardContainer = styled.View<CardProps>`
 
 export const DetailsHeader = styled.View`
   width: 100%;
-  padding: ${RFValue(10)}px;
-`
-
-export const StepHeader = styled.View`
-  width: 100%;
-  background-color: ${({ theme }) => theme.colors.background};
-  padding: ${RFValue(10)}px;
-
-  align-items: center;
-`
-
-export const Details = styled.View`
-  width: 100%;
-  background-color: ${({ theme }) => theme.colors.background};
   padding: ${RFValue(18)}px;
-
   flex-direction: row;
-  align-items: center;
   justify-content: space-between;
-
-  margin-top: 2px;
-`
-
-export const DetailsRegular = styled.Text`
-  font-family: ${({ theme }) => theme.fonts.regular};
-  font-size: ${RFValue(11)}px;
-  color: ${({ theme }) => theme.colors.text};
-
-  width: 70%;
-`
-
-export const SubjectMedium = styled.Text`
-  font-family: ${({ theme }) => theme.fonts.semibold};
-  font-size: ${RFValue(11)}px;
-  color: ${({ theme }) => theme.colors.text};
+  align-items: center;
 `
 
 export const DetailsButton = styled(RectButton)`

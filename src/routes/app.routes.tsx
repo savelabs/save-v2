@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
+import { DarkTheme, NavigationContainer } from '@react-navigation/native';
 
 import { Feather } from '@expo/vector-icons';
 import { ThemeContext } from 'styled-components';
@@ -9,10 +9,12 @@ import { ThemeContext } from 'styled-components';
 import { Home } from '../pages/Home';
 
 import { RFValue } from 'react-native-responsive-fontsize';
-import { View } from 'react-native';
+import { useColorScheme, View } from 'react-native';
 
 import ProfileStackRoutes from './profilestack.routes';
 import StudyStackRoutes from './studystack.routes';
+import { useThemeMode } from '../hooks/theme';
+import HomeStackRoutes from './homestack.routes';
 
 
 export type AppBottomTabsParams = {
@@ -25,9 +27,18 @@ const { Navigator, Screen } = createBottomTabNavigator<AppBottomTabsParams>();
 
 export default function AppRoutes() {
   const { colors } = useContext(ThemeContext);
+  const autoTheme = useColorScheme()
+  const { theme } = useThemeMode()
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={theme === 'auto'
+      ? autoTheme === 'light'
+        ? undefined
+        : DarkTheme
+      : theme === 'light'
+        ? undefined
+        : DarkTheme
+    }>
       <Navigator
         initialRouteName="Home"
         screenOptions={({ route }) => ({
@@ -61,7 +72,7 @@ export default function AppRoutes() {
         />
         <Screen
           name="Home"
-          component={Home}
+          component={HomeStackRoutes}
         />
         <Screen
           name="Profile"

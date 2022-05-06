@@ -76,10 +76,10 @@ export function ProfileSettings() {
           <ModalTextSecurity>
             Ao ativar as notificações escolares você concorda com nossos termos, nos permitindo criptografar e armazenar alguns dados sensíveis, dentre eles a sua senha e seu boletim escolar. Você pode desativar quando quiser e suas informações serão apagadas automaticamente.
           </ModalTextSecurity>
-          <ModalButton selected onPress={() => { }}>
-            <ModalTextButton>Ativar e concordar</ModalTextButton>
+          <ModalButton selected onPress={() => setIsModalNotificationVisible(false)}>
+            <ModalTextButton>Em breve</ModalTextButton>
           </ModalButton>
-          <ModalButton onPress={() => { }}>
+          <ModalButton onPress={() => setIsModalNotificationVisible(false)}>
             <ModalTextButton>Desativar</ModalTextButton>
           </ModalButton>
         </ModalContainer>

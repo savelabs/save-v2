@@ -20,8 +20,20 @@
       "**/*"
     ],
     "android": {
-      "package": "com.iagonobre.Save",
-      "userInterfaceStyle": "automatic"
+      "versionCode": 21,
+      "package": "com.save.genp",
+      "userInterfaceStyle": "automatic",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#5F2F8E"
+      },
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "USE_FINGERPRINT",
+        "USE_BIOMETRIC"
+      ]
     },
     "ios": {
       "userInterfaceStyle": "automatic"

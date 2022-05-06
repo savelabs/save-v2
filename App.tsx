@@ -14,7 +14,10 @@ import {
 import { Routes } from './src/routes/index.routes';
 import { AppProvider } from './src/hooks';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { LogBox } from 'react-native';
+import { LogBox, StatusBar } from 'react-native';
+
+import { ApolloProvider } from "@apollo/client";
+import { clientGraphql } from './src/utils/api';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -34,11 +37,14 @@ export default function App() {
   const client = new QueryClient();
 
   return (
-    <QueryClientProvider client={client}>
-      <AppProvider>
-        <Routes />
-        <FlashMessage position="top" />
-      </AppProvider>
-    </QueryClientProvider>
+    <ApolloProvider client={clientGraphql}>
+      <QueryClientProvider client={client}>
+        <AppProvider>
+          <StatusBar backgroundColor="#5F2F8E" />
+          <Routes />
+          <FlashMessage position="top" />
+        </AppProvider>
+      </QueryClientProvider>
+    </ApolloProvider >
   );
 }

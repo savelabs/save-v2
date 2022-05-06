@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Keyboard, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, Keyboard, Linking, TouchableOpacity } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useForm } from 'react-hook-form';
 
@@ -12,6 +12,11 @@ import Illustration from '../../assets/login-image.svg';
 import { Button } from '../../components/Forms/Button';
 import { InputForm } from '../../components/Forms/InputForm';
 
+import { SignInCredentials, useAuth } from '../../hooks/auth';
+import { ThemeContext } from 'styled-components/native';
+import { gql, useMutation } from '@apollo/client';
+import { errorAlert } from '../../utils/alert';
+
 import {
   Container,
   IllustrationContainer,
@@ -20,9 +25,7 @@ import {
   Fields,
   Policy,
 } from './styles';
-import { useAuth } from '../../hooks/auth';
-import { ThemeContext } from 'styled-components/native';
-import { useNavigation } from '@react-navigation/native';
+
 
 interface FormData {
   matricula: string;
@@ -71,26 +74,48 @@ export function Login() {
     animation.value = 0;
   };
 
-  async function onSubmit(data: any) {
+  const LOGIN_USER = gql`
+    mutation Login($matriculation: String!, $password: String!) {
+      login(data: {
+        matriculation: $matriculation
+        password: $password
+      }) {
+        user {
+          id,
+        },
+        token,
+        refreshToken,
+        apiToken,
+        cookies
+      }
+    }
+  `;
+
+  const [mutateFunction] = useMutation(LOGIN_USER);
+
+  async function onSubmit(formData: any) {
     try {
       setLoading(true);
-      await signIn(data as FormData);
+      const signInSave = await mutateFunction({
+        variables: {
+          matriculation: formData.matricula,
+          password: formData.password
+        }
+      })
+
+      await signIn(formData as FormData, signInSave.data.login as SignInCredentials);
       setLoading(false);
       reset()
     } catch (err: any) {
       setLoading(false);
       reset()
+      return errorAlert(err.message, 'Certifique de que as informações estão corretas.')
     }
   }
 
   useEffect(() => {
     Keyboard.addListener("keyboardDidShow", keyboardDidShow);
     Keyboard.addListener("keyboardDidHide", keyboardDidHide);
-
-    return () => {
-      Keyboard.removeListener("keyboardDidShow", keyboardDidShow);
-      Keyboard.removeListener("keyboardDidHide", keyboardDidHide);
-    };
   }, [isKeyboardActive]);
 
   return (
@@ -143,7 +168,7 @@ export function Login() {
               <Button enabled={true} onPress={() => handleSubmit(onSubmit)()}>Entrar</Button>
             )
           }
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => Linking.openURL('https://save-page.vercel.app/privacy')}>
             <Policy>Política de Privacidade</Policy>
           </TouchableOpacity>
         </FormContainer>

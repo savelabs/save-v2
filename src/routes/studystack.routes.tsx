@@ -10,6 +10,7 @@ import { Classes } from '../pages/Study/SchoolClasses';
 import { Infos } from '../pages/Study/Infos';
 import { Grades } from '../pages/Study/Grades';
 import { ProfileData } from '../pages/Profile/ProfileData';
+import { DetailGrades } from '../pages/Study/components/DetailGrades';
 
 export type AppStackParams = {
   AppRoutes: undefined;
@@ -18,6 +19,9 @@ export type AppStackParams = {
   Infos: undefined;
   Grades: undefined;
   ProfileData: undefined;
+  DetailGrades: {
+    classID: string;
+  }
 };
 
 const { Navigator, Screen, Group } = createStackNavigator<AppStackParams>();
@@ -30,6 +34,7 @@ export default function StudyStackRoutes() {
         <Screen name="Materials" component={Materials} />
         <Screen name="Classes" component={Classes} />
         <Screen name="Infos" component={Infos} />
+        <Screen name="DetailGrades" component={DetailGrades} />
       </Group>
     </Navigator>
   );

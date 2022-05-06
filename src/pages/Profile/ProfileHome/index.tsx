@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { ThemeContext } from 'styled-components/native';
+import { warningAlert } from '../../../utils/alert';
 import { ProfileHeader } from '../components/ProfileHeader';
 
 import {
@@ -37,7 +38,7 @@ export function Profile() {
         </NavTextContainer>
       </NavButton>
 
-      <NavButton>
+      <NavButton onPress={() => warningAlert('Em breve', 'Um novo sistema de tickets está sendo construído')}>
         <ShapeIcon>
           <Feather name="flag" size={RFValue(24)} color={colors.primary_dark} />
         </ShapeIcon>
