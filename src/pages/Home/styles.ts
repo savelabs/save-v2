@@ -69,6 +69,7 @@ export const UserButton = styled.TouchableOpacity`
   width: ${RFValue(48)}px;
   height: ${RFValue(48)}px;
   border-radius: ${RFValue(48/2)}px;
+  background-color: ${({ theme }) => theme.colors.text};
 
   align-items: center;
   justify-content: center;

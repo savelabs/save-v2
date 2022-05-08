@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import AppLoading from 'expo-app-loading';
 
 import { ThemeProvider } from 'styled-components';
@@ -8,10 +8,11 @@ import AuthRoutes from './auth.routes';
 
 import { useAuth } from '../hooks/auth';
 import AppRoutes from './app.routes';
-import { useColorScheme, View } from 'react-native';
+import { useColorScheme, View, TouchableOpacity, Text } from 'react-native';
 import { useThemeMode } from '../hooks/theme';
 
 import * as LocalAuthentication from 'expo-local-authentication';
+import { Button } from '../components/Forms/Button';
 
 export function Routes() {
   const { student, loading, isUserFirstTime, isUserEnrolled, setUserEnrolled } = useAuth();
@@ -24,12 +25,46 @@ export function Routes() {
 
 
   if (student && !isUserEnrolled) {
-    LocalAuthentication.authenticateAsync().then((res) => {
-      if (res.success) {
-        setUserEnrolled(true)
-      }
-    })
-    return <View style={{ flex: 1, backgroundColor: light.colors.primary }} />;
+    function getAuthentication() {
+      LocalAuthentication.authenticateAsync({
+        promptMessage: 'Save',
+      }).then((res) => {
+        if (res.success) {
+          setUserEnrolled(true)
+        }
+      })
+    }
+
+    getAuthentication()
+    return (
+      <View style={{
+        flex: 1,
+        padding: 28,
+        backgroundColor: light.colors.primary,
+        justifyContent: 'space-between',
+      }} >
+        <View />
+        <TouchableOpacity
+          onPress={getAuthentication}
+          style={{
+            width: '100%',
+            height: 58,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 16,
+            backgroundColor: light.colors.background
+          }}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontFamily: 'Poppins_600SemiBold',
+              color: light.colors.primary
+            }}>
+            Usar senha do celular
+          </Text>
+        </TouchableOpacity>
+      </View >
+    );
   }
 
   return (

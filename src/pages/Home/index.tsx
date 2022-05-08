@@ -39,7 +39,7 @@ import {
 
 export function Home() {
   const { navigate } = useNavigation();
-  const { renew, student, renewSaveCredentials } = useAuth();
+  const { renew, student, renewSaveCredentials, saveStudent } = useAuth();
   const { colors } = useContext(ThemeContext);
   const [loading, setLoading] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
@@ -64,7 +64,7 @@ export function Home() {
     getUpdatedData();
   }, [])
 
-  const avatarSuap = student.url_foto_150x200.substring(0, 5) === 'https' ? student.url_foto_150x200 : `https://suap.ifrn.edu.br${student.url_foto_150x200}`;
+  const avatarSuap = saveStudent?.photoHref ? `https://save.oulu.ifrn.edu.br/static/${saveStudent.photoHref}` : student.url_foto_150x200.substring(0, 5) === 'https' ? student.url_foto_150x200 : `https://suap.ifrn.edu.br${student.url_foto_150x200}`;
 
   function handleNavigateToProfile() {
     navigate('Profile');
@@ -96,7 +96,7 @@ export function Home() {
               <Feather name="bell" size={RFValue(24)} color={colors.text_white} />
             </BellContainer>
             <UserButton onPress={handleNavigateToProfile}>
-              <UserImage source={{ uri: avatarSuap }} />
+              <ActivityIndicator size="small" color={colors.background} />
             </UserButton>
           </NavContainer>
         </HeaderContainer>
@@ -147,7 +147,10 @@ export function Home() {
             <Feather name="bell" size={RFValue(24)} color={colors.text_white} />
           </BellContainer>
           <UserButton onPress={handleNavigateToProfile}>
-            <UserImage source={{ uri: avatarSuap }} />
+            {loadingSave
+              ? <ActivityIndicator size="small" color={colors.background} />
+              : <UserImage source={{ uri: avatarSuap }} />
+            }
           </UserButton>
         </NavContainer>
       </HeaderContainer>

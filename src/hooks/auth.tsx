@@ -39,6 +39,11 @@ type SelectedClassProps = {
   description?: string
 }
 
+type SaveStudent = {
+  id: string;
+  photoHref: string;
+}
+
 type AuthContextData = {
   signIn: ({ matricula, password }: SignInType, signInCredentials: SignInCredentials) => Promise<void>;
   signOut: () => Promise<void>;
@@ -57,6 +62,7 @@ type AuthContextData = {
   classKey: SelectedClassProps;
   isUserEnrolled: boolean;
   saveCredentials: SignInCredentials | null;
+  saveStudent?: SaveStudent;
 }
 
 type AuthProvider = {
@@ -69,6 +75,7 @@ export const AuthContext = createContext<AuthContextData>(
 
 export function AuthProvider({ children }: AuthProvider) {
   const [data, setData] = useState<AuthState>({} as AuthState);
+  const [saveStudent, setSaveStudent] = useState<SaveStudent>();
   const [periodKey, setStatePeriodKey] = useState('');
   const [classKey, setStateClassKey] = useState<SelectedClassProps>({});
   const [isUserEnrolled, setStateIsUserEnrolled] = useState(false);
@@ -84,13 +91,15 @@ export function AuthProvider({ children }: AuthProvider) {
         studentSuapCredentials,
         student,
         period,
-        saveCredentialsStoraged
+        saveCredentialsStoraged,
+        saveStudentStoraged
       ] = await AsyncStorage.multiGet([
         '@Save:firstTime',
         '@Save:studentSuapCredentials',
         '@Save:student',
         '@Save:period',
-        '@Save:saveCredentialsStoraged'
+        '@Save:saveCredentialsStoraged',
+        '@Save:saveStudentStoraged'
       ]);
 
       if (storageFirstTime[1] === 'false') {
@@ -110,6 +119,10 @@ export function AuthProvider({ children }: AuthProvider) {
 
       if (saveCredentialsStoraged[1]) {
         setSaveCredentials(JSON.parse(saveCredentialsStoraged[1]))
+      }
+
+      if (saveStudentStoraged[1]) {
+        setSaveStudent(JSON.parse(saveStudentStoraged[1]))
       }
 
       setLoading(false);
@@ -213,6 +226,7 @@ export function AuthProvider({ children }: AuthProvider) {
           }) {
             user {
               id,
+              photoHref
             },
             token,
             refreshToken,
@@ -229,8 +243,10 @@ export function AuthProvider({ children }: AuthProvider) {
         },
       })
 
+      setSaveStudent(response.data.data.login.user)
       setSaveCredentials(response.data.data.login);
       AsyncStorage.setItem('@Save:saveCredentialsStoraged', JSON.stringify(response.data.data.login))
+      AsyncStorage.setItem('@Save:saveStudentStoraged', JSON.stringify(response.data.data.login.user))
     } catch (err) {
       await signOut()
       return errorAlert('Sua sessão expirou', 'Tente realizar o login novamente.')
@@ -289,7 +305,8 @@ export function AuthProvider({ children }: AuthProvider) {
         saveCredentials,
         periodKey,
         setClassKey,
-        classKey
+        classKey,
+        saveStudent
       }}
     >
       {children}

@@ -11,6 +11,9 @@ import * as ImagePicker from 'expo-image-picker';
 import { ReactNativeFile } from 'apollo-upload-client';
 import { gql, useMutation } from '@apollo/client';
 import { useAuth } from '../../../hooks/auth';
+import { warningAlert, errorAlert } from '../../../utils/alert';
+
+import * as FileSystem from 'expo-file-system';
 
 import {
   Container,
@@ -22,16 +25,16 @@ import {
   UploadButton,
   UploadText
 } from './styles';
-import { warningAlert } from '../../../utils/alert';
+
 
 export function ProfileEdit() {
   const { goBack } = useNavigation();
   const { colors } = useContext(ThemeContext);
-  const { saveCredentials } = useAuth();
+  const { saveCredentials, renewSaveCredentials } = useAuth();
 
   const FILE_UPLOAD = gql`
-    mutation Upload($file: Upload!) {
-      uploadPhoto(file: $file)
+    mutation Upload($file: String!, $extension: String!) {
+      uploadPhoto(file: $file, extension: $extension)
     }
   `;
 
@@ -78,16 +81,31 @@ export function ProfileEdit() {
 
     const token = response.data.refreshToken;
 
-    await mutateFunction({
-      variables: {
-        file,
-      },
-      context: {
-        headers: {
-          "Authorization": `Bearer ${token}`
+    const extension = file.uri.split('.').pop();
+    const fileBase64 = await FileSystem.readAsStringAsync(file.uri, { encoding: 'base64' });
+
+    try {
+      const teste = await mutateFunction({
+        variables: {
+          file: fileBase64,
+          extension
+        },
+        context: {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
         }
-      }
-    })
+      })
+
+      console.log(teste)
+
+      renewSaveCredentials()
+
+      return warningAlert('Foto enviada', 'Sua foto foi enviada com sucesso, aguarde um momento para atualizar');
+    } catch (err) {
+      console.log(err)
+      return errorAlert('Ocorreu um erro', 'Não foi possível alterar sua foto');
+    }
   }
 
   return (
@@ -102,13 +120,13 @@ export function ProfileEdit() {
       </HeaderContainer>
 
       <ButtonContainer>
-        <TouchableOpacity onPress={() => warningAlert('Em breve', 'Um novo sistema de fotos está sendo construído')}>
+        <TouchableOpacity onPress={() => handleChangePhoto()} >
           <UploadButton>
             <UploadText>ALTERAR FOTO DE PERFIL</UploadText>
             <Feather name="upload" size={RFValue(24)} color={colors.primary_dark} />
           </UploadButton>
         </TouchableOpacity>
       </ButtonContainer>
-    </Container>
+    </Container >
   )
 }

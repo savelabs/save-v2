@@ -38,13 +38,13 @@ type ProfileHeaderProps = {
 
 export function ProfileHeader({ editMode }: ProfileHeaderProps) {
   const { colors, theme } = useContext(ThemeContext);
-  const { student, signOut } = useAuth();
+  const { student, signOut, saveStudent } = useAuth();
   const { navigate, goBack } = useNavigation();
 
   const [isShareModalVisible, setShareModalVisible] = useState(false);
   const [isSignOutModalVisible, setSignOutModalVisible] = useState(false);
 
-  const avatarSuap = student.url_foto_150x200.substring(0, 5) === 'https' ? student.url_foto_150x200 : `https://suap.ifrn.edu.br${student.url_foto_150x200}`;
+  const avatarSuap = saveStudent?.photoHref ? `https://save.oulu.ifrn.edu.br/static/${saveStudent.photoHref}` : student.url_foto_150x200.substring(0, 5) === 'https' ? student.url_foto_150x200 : `https://suap.ifrn.edu.br${student.url_foto_150x200}`;
 
   function handleShare() {
     Share.share({

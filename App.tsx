@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import AppLoading from 'expo-app-loading';
 import FlashMessage from "react-native-flash-message";
@@ -19,6 +19,8 @@ import { LogBox, StatusBar } from 'react-native';
 import { ApolloProvider } from "@apollo/client";
 import { clientGraphql } from './src/utils/api';
 
+import * as Updates from "expo-updates";
+
 export default function App() {
   const [fontsLoaded] = useFonts({
     BalooChettan2_700Bold,
@@ -28,6 +30,17 @@ export default function App() {
     Poppins_500Medium,
     Poppins_700Bold
   });
+
+  useEffect(() => {
+    async function updateApp() {
+      const { isAvailable } = await Updates.checkForUpdateAsync();
+      if (isAvailable) {
+        await Updates.fetchUpdateAsync();
+        await Updates.reloadAsync();
+      }
+    }
+    updateApp();
+  }, []);
 
   if (!fontsLoaded) {
     return <AppLoading />;

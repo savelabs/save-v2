@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Boletim, ClienteSuap } from 'suap-sdk-javascript';
 
 import { useQuery } from 'react-query';
@@ -33,6 +33,7 @@ import {
   CardBar,
   ProgressBar
 } from './styles';
+import { BackHandler } from 'react-native';
 
 type GradeSubjectProps = {
   period: string;
@@ -42,7 +43,22 @@ type GradeSubjectProps = {
 export function GradeSubject({ classID, period }: GradeSubjectProps) {
   const { data } = useAuth();
   const { colors } = useContext(ThemeContext);
-  const { navigate } = useNavigation();
+  const { navigate, goBack } = useNavigation();
+
+  useEffect(() => {
+    const backAction = () => {
+      goBack()
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
 
   if (!period) {
     return (
@@ -153,18 +169,17 @@ export function GradeSubject({ classID, period }: GradeSubjectProps) {
         </GradeSquadBox>
       </GradeSquadContainer>
 
-      {period === '2022.1' && (
-        <CardContainer>
-          <DetailsButton onPress={() => navigate('DetailGrades', {
-            classID
-          })}>
-            <DetailsHeader>
-              <SubjectTitle>Detalhar Notas</SubjectTitle>
-              <Feather name="plus-circle" size={RFValue(24)} color={colors.primary_dark} />
-            </DetailsHeader>
-          </DetailsButton>
-        </CardContainer>
-      )}
+      <CardContainer>
+        <DetailsButton onPress={() => navigate('DetailGrades', {
+          classID,
+          period
+        })}>
+          <DetailsHeader>
+            <SubjectTitle>Detalhar Notas</SubjectTitle>
+            <Feather name="plus-circle" size={RFValue(24)} color={colors.primary_dark} />
+          </DetailsHeader>
+        </DetailsButton>
+      </CardContainer>
 
       <CardContainer>
         <CardPadding>
