@@ -5,6 +5,7 @@ import { ProfileData } from '../pages/Profile/ProfileData';
 import { Profile } from '../pages/Profile/ProfileHome';
 import { ProfileSettings } from '../pages/Profile/ProfileSettings';
 import { ProfileEdit } from '../pages/Profile/ProfileEdit';
+import { ProfileTickets } from '../pages/Profile/ProfileTickets';
 
 export type AppStackParams = {
   ProfileHome: undefined;

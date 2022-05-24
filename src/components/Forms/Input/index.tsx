@@ -15,6 +15,7 @@ import { ThemeContext } from 'styled-components';
 
 interface Props extends TextInputProps {
   title: string;
+  textBox?: boolean;
   password: boolean;
   passwordContext: boolean;
   onPress?: () => void;
@@ -28,6 +29,7 @@ export function Input(
     passwordContext,
     onPress,
     error,
+    textBox,
     ...rest
   }: Props) {
 
@@ -39,7 +41,7 @@ export function Input(
       <Title>
         {`${title}`}
       </Title>
-      <BorderContainer>
+      <BorderContainer textBox={textBox}>
         <Container
           password={password}
           placeholderTextColor={error ? colors.alert : colors.border}
@@ -47,7 +49,7 @@ export function Input(
           placeholder={error ? error : placeholder}
           border={error ? colors.alert : colors.border}
         />
-        { password && (
+        {password && (
           <PasswordButton border={error ? colors.alert : colors.border}>
             <BorderlessButton onPress={onPress}>
               {passwordContext ? (

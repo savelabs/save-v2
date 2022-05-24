@@ -3,6 +3,10 @@ import { RFValue } from 'react-native-responsive-fontsize';
 
 import styled, { css } from 'styled-components/native';
 
+type InputProps = {
+  textBox?: boolean;
+}
+
 interface Props {
   password?: boolean;
   border: string;
@@ -12,8 +16,7 @@ export const InputContainer = styled.View`
   margin-bottom: ${RFValue(8)}px;
 `
 
-export const BorderContainer = styled.View`
-  height: ${RFValue(52)}px;
+export const BorderContainer = styled.View<InputProps>`
   width: 100%;
 
   padding: 2px;
@@ -22,6 +25,8 @@ export const BorderContainer = styled.View`
 
   background-color: ${({ theme }) => theme.colors.shape};
   border-radius: 16px;
+
+  ${(props) => props.textBox ? css`` : css`height: ${RFValue(52)}px;` }
 `
 
 export const Container = styled(TextInput)<Props>`

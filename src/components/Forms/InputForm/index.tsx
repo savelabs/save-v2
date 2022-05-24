@@ -16,6 +16,7 @@ interface Props extends TextInputProps {
   control: Control;
   error: string;
   placeholder?: string;
+  textBox?: boolean;
 }
 
 export function InputForm({
@@ -26,6 +27,7 @@ export function InputForm({
   error,
   passwordContext = false,
   password = false,
+  textBox = false,
   ...rest
 }: Props) {
   return (
@@ -35,6 +37,7 @@ export function InputForm({
         name={name}
         render={({ field: { onChange, value } }) => (
           <Input
+            textBox={textBox}
             title={title}
             error={error}
             onPress={onPress}

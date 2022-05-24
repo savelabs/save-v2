@@ -85,7 +85,7 @@ export function ProfileEdit() {
     const fileBase64 = await FileSystem.readAsStringAsync(file.uri, { encoding: 'base64' });
 
     try {
-      const teste = await mutateFunction({
+      await mutateFunction({
         variables: {
           file: fileBase64,
           extension
@@ -97,13 +97,10 @@ export function ProfileEdit() {
         }
       })
 
-      console.log(teste)
-
       renewSaveCredentials()
 
       return warningAlert('Foto enviada', 'Sua foto foi enviada com sucesso, aguarde um momento para atualizar');
     } catch (err) {
-      console.log(err)
       return errorAlert('Ocorreu um erro', 'Não foi possível alterar sua foto');
     }
   }
@@ -120,7 +117,7 @@ export function ProfileEdit() {
       </HeaderContainer>
 
       <ButtonContainer>
-        <TouchableOpacity onPress={() => handleChangePhoto()} >
+        <TouchableOpacity onPress={() => handleChangePhoto()}>
           <UploadButton>
             <UploadText>ALTERAR FOTO DE PERFIL</UploadText>
             <Feather name="upload" size={RFValue(24)} color={colors.primary_dark} />

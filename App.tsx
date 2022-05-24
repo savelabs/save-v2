@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import AppLoading from 'expo-app-loading';
 import FlashMessage from "react-native-flash-message";
@@ -14,7 +14,7 @@ import {
 import { Routes } from './src/routes/index.routes';
 import { AppProvider } from './src/hooks';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { LogBox, StatusBar } from 'react-native';
+import { LogBox, StatusBar, View, Text } from 'react-native';
 
 import { ApolloProvider } from "@apollo/client";
 import { clientGraphql } from './src/utils/api';
@@ -31,16 +31,41 @@ export default function App() {
     Poppins_700Bold
   });
 
+  const [loadingUpdate, setUpdateLoading] = useState(false);
+
   useEffect(() => {
     async function updateApp() {
       const { isAvailable } = await Updates.checkForUpdateAsync();
       if (isAvailable) {
+        setUpdateLoading(true)
         await Updates.fetchUpdateAsync();
         await Updates.reloadAsync();
+        setUpdateLoading(true)
       }
     }
     updateApp();
   }, []);
+
+  if (loadingUpdate) {
+    return (
+      <View style={{
+        flex: 1,
+        padding: 28,
+        backgroundColor: '#69349E',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }} >
+        <Text
+          style={{
+            fontSize: 16,
+            fontFamily: 'Poppins_600SemiBold',
+            color: '#69349E',
+          }}>
+          Aguarde, estamos atualizando o aplicativo.
+        </Text>
+      </View >
+    )
+  }
 
   if (!fontsLoaded) {
     return <AppLoading />;

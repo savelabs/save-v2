@@ -64,10 +64,14 @@ export function Home() {
     getUpdatedData();
   }, [])
 
-  const avatarSuap = saveStudent?.photoHref ? `https://save.oulu.ifrn.edu.br/static/${saveStudent.photoHref}` : student.url_foto_150x200.substring(0, 5) === 'https' ? student.url_foto_150x200 : `https://suap.ifrn.edu.br${student.url_foto_150x200}`;
+  const avatarSuap = saveStudent?.photoHref ? `https://save.oulu.ifrn.edu.br${saveStudent.photoHref}` : student.url_foto_150x200.substring(0, 5) === 'https' ? student.url_foto_150x200 : `https://suap.ifrn.edu.br${student.url_foto_150x200}`;
 
   function handleNavigateToProfile() {
     navigate('Profile');
+  }
+
+  function handleNavigateToTickets() {
+    navigate('ProfileTickets')
   }
 
   function handleNavigateToNotification() {
@@ -146,34 +150,32 @@ export function Home() {
           <BellContainer onPress={() => warningAlert('Em breve', 'Um novo sistema de notificações está sendo construído')}>
             <Feather name="bell" size={RFValue(24)} color={colors.text_white} />
           </BellContainer>
-          <UserButton onPress={handleNavigateToProfile}>
-            {loadingSave
-              ? <ActivityIndicator size="small" color={colors.background} />
-              : <UserImage source={{ uri: avatarSuap }} />
-            }
-          </UserButton>
+          {loadingSave ? (
+            <UserButton >
+              <ActivityIndicator size="small" color={colors.primary} />
+            </UserButton>
+          ) : (
+            <UserButton onPress={handleNavigateToProfile}>
+              <UserImage source={{ uri: avatarSuap }} />
+            </UserButton>
+          )}
         </NavContainer>
       </HeaderContainer>
       <Container>
-        {/*
         <CardContainer>
           <CardTitle>Meus Documentos</CardTitle>
           <CardText>Baixar documentos acadêmicos</CardText>
           <CardBoxButton disabled={loadingSave} onPress={() => navigate('Documents')}>
             <CardTextMedium>{loadingSave ? 'Carregando...' : 'Ver Documentos'}</CardTextMedium>
-            < Feather name="log-in" size={RFValue(24)} color={colors.primary_dark} />
+            <Feather name="log-in" size={RFValue(24)} color={colors.primary_dark} />
           </CardBoxButton>
         </CardContainer>
-        */}
-        <CardContainer>
-          <CardTitle>Save 2.0</CardTitle>
-          <CardText>Estamos em testes, iremos desbloquear as funções ao longo das próximas semanas.</CardText>
-        </CardContainer>
+
         <CardContainer>
           <CardTitle>Tickets</CardTitle>
           <CardText>Você tem alguma sugestão ou erro?</CardText>
-          <CardBoxButton onPress={() => warningAlert('Em breve', 'Um novo sistema de tickets está sendo construído')}>
-            <CardTextMedium>Criar um Ticket</CardTextMedium>
+          <CardBoxButton disabled={loadingSave} onPress={() => handleNavigateToTickets()}>
+            <CardTextMedium>{loadingSave ? 'Carregando...' : 'Criar Ticket'}</CardTextMedium>
             <Feather name="log-in" size={RFValue(24)} color={colors.primary_dark} />
           </CardBoxButton>
         </CardContainer>

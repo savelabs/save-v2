@@ -63,7 +63,7 @@ export function Grade({ period }: GradeProps) {
     return (
       <Nothing
         title="Boletim Geral"
-        description="Algum erro inesperado ocorreu"
+        description="Algum erro inesperado ocorreu, tente sair e entrar novamente."
       />
     )
   }

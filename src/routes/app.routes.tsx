@@ -64,6 +64,7 @@ export default function AppRoutes() {
           },
           tabBarActiveTintColor: colors.primary_dark,
           tabBarInactiveTintColor: colors.primary_dark,
+          tabBarHideOnKeyboard: true
         })}
       >
         <Screen

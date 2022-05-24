@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { ClienteSuap, Credenciais, InformaçõesPessoais } from 'suap-sdk-javascript';
 
-import { setItemAsync, getItemAsync } from 'expo-secure-store';
+import { setItemAsync, deleteItemAsync, getItemAsync } from 'expo-secure-store';
 import { errorAlert } from '../utils/alert';
 import { gql } from '@apollo/client';
 import { print } from 'graphql';
@@ -254,9 +254,12 @@ export function AuthProvider({ children }: AuthProvider) {
   }
 
   async function signOut() {
+    await deleteItemAsync('studentCredentials');
     await AsyncStorage.multiRemove([
       '@Save:student',
       '@Save:studentSuapCredentials',
+      '@Save:saveCredentialsStoraged',
+      '@Save:saveStudentStoraged'
     ]);
 
     setData({} as AuthState);
