@@ -2,9 +2,13 @@ import React from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import SkeletonContent from '../../../../components/SkeletonContent';
 
+import {
+  Container
+} from '../StudyPage/styles';
+
 export function LoadingHeader() {
   return (
-    <>
+    <Container>
       <SkeletonContent
         containerStyle={{
           width: '100%',
@@ -99,6 +103,6 @@ export function LoadingHeader() {
           },
         ]}
       />
-    </>
+    </Container>
   )
 }

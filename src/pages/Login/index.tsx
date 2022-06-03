@@ -82,6 +82,7 @@ export function Login() {
       }) {
         user {
           id,
+          photoHref
         },
         token,
         refreshToken,

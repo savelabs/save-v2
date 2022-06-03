@@ -68,7 +68,7 @@ export function Grade({ period }: GradeProps) {
     )
   }
 
-  if (isLoading || isFetching) {
+  if (isLoading) {
     return <LoadingSpinner />;
   }
 

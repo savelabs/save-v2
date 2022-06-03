@@ -39,7 +39,7 @@ import {
 
 export function Home() {
   const { navigate } = useNavigation();
-  const { renew, student, renewSaveCredentials, saveStudent } = useAuth();
+  const { renew, student, renewSaveCredentials, saveStudent, saveCredentials } = useAuth();
   const { colors } = useContext(ThemeContext);
   const [loading, setLoading] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
@@ -156,7 +156,11 @@ export function Home() {
             </UserButton>
           ) : (
             <UserButton onPress={handleNavigateToProfile}>
-              <UserImage source={{ uri: avatarSuap }} />
+              <UserImage source={{
+                uri: avatarSuap, headers: {
+                  "Authorization": `Bearer ${saveCredentials?.token}`
+                }
+              }} />
             </UserButton>
           )}
         </NavContainer>

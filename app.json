@@ -4,7 +4,7 @@
   "expo": {
     "name": "Save",
     "slug": "Save",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -20,7 +20,7 @@
       "**/*"
     ],
     "android": {
-      "versionCode": 22,
+      "versionCode": 24,
       "package": "com.save.genp",
       "userInterfaceStyle": "automatic",
       "adaptiveIcon": {

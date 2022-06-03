@@ -57,7 +57,7 @@ export function ClassData({ classID }: ClassDataProps) {
       />
     )
   }
-  if (isLoading || isFetching) {
+  if (isLoading) {
     return <LoadingSpinner />;
   }
 

@@ -76,7 +76,7 @@ export function Info({ classID }: InfoProps) {
     )
   }
 
-  if (isLoading || isFetching) {
+  if (isLoading) {
     return <LoadingSpinner />;
   }
 

@@ -82,15 +82,21 @@ export function DetailGrades() {
           }
         })
 
+        let formatedDetailed: DetailedGrade[] = []
+
         const detailed = Object.entries(response.data.suap['Detalhamento das Notas'])
-        const formatedDetailed = detailed.map((step: any) => {
-          return ({
-            step: step[0],
-            description: step[1][0]['Descrição'],
-            gradeValue: step[1][0]['Nota Obtida'],
-            weight: step[1][0]['Peso'],
-            initials: step[1][0]['Sigla'],
-            type: step[1][0]['Tipo'],
+        detailed.map((stepArray: Array<any>) => {
+          stepArray[1].map((step: any) => {
+            const detail = {
+              step: stepArray[0],
+              description: step['Descrição'],
+              gradeValue: step['Nota Obtida'],
+              weight: step['Peso'],
+              initials: step['Sigla'],
+              type: step['Tipo'],
+            }
+
+            formatedDetailed.push(detail);
           })
         })
 
@@ -98,6 +104,7 @@ export function DetailGrades() {
         setLoading(false)
       } catch (err) {
         setLoading(false);
+        console.log(err)
         errorAlert('Erro Inesperado', 'Abra um ticket e contate-nos para resolver o problema.')
       }
     }

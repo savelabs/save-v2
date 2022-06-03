@@ -108,7 +108,7 @@ export function GradeSubject({ classID, period }: GradeSubjectProps) {
       />
     )
   }
-  if (isLoading || isFetching) {
+  if (isLoading) {
     return <LoadingSpinner />;
   }
 
@@ -204,7 +204,7 @@ export function GradeSubject({ classID, period }: GradeSubjectProps) {
         </CardPadding>
         <CardBar>
           <ProgressBar
-            percentBar={(currentSubject.carga_horaria_cumprida / currentSubject.carga_horaria) * 100}
+            percentBar={currentSubject.carga_horaria_cumprida > currentSubject.carga_horaria ? 100 : (currentSubject.carga_horaria_cumprida / currentSubject.carga_horaria) * 100}
           />
         </CardBar>
       </CardContainer>

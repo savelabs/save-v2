@@ -23,6 +23,9 @@ import { Nothing } from '../Nothing';
 import { errorAlert } from '../../../../utils/alert';
 
 import {
+  Container,
+  ScrollContainer,
+
   PeriodContainer,
   PeriodScroll,
   PeriodButton,
@@ -62,13 +65,14 @@ type SelectedClassProps = {
   description?: string
 }
 
-export function StudyPage({ page }: HeaderProps) {
+export function StudyPage() {
   const { colors } = useContext(ThemeContext);
   const { navigate } = useNavigation();
 
   const { setPeriodKey, classKey, setClassKey, periodKey, data } = useAuth();
   const [selectedPeriodKey, setSelectedPeriodKey] = useState('');
 
+  const [page, setPage] = useState<Pages>('grade');
   const [selectedClass, setSelectedClass] = useState<SelectedClassProps>({})
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -163,152 +167,154 @@ export function StudyPage({ page }: HeaderProps) {
   }
 
   return (
-    <>
-      <Modal
-        animationType="fade"
-        visible={isModalVisible}
-        transparent={true}
-      >
-        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-          <ModalOverlayContainer />
-        </TouchableWithoutFeedback>
+    <ScrollContainer>
+      <Container>
+        <Modal
+          animationType="fade"
+          visible={isModalVisible}
+          transparent={true}
+        >
+          <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+            <ModalOverlayContainer />
+          </TouchableWithoutFeedback>
 
-        <ModalContainer>
-          <ModalBox>
-            <ModalHeader>
-              <ModalTitle>Selecione uma matéria</ModalTitle>
-              <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <Feather name="x" size={RFValue(24)} color={colors.text} />
-              </TouchableOpacity>
-            </ModalHeader>
+          <ModalContainer>
+            <ModalBox>
+              <ModalHeader>
+                <ModalTitle>Selecione uma matéria</ModalTitle>
+                <TouchableOpacity onPress={() => setModalVisible(false)}>
+                  <Feather name="x" size={RFValue(24)} color={colors.text} />
+                </TouchableOpacity>
+              </ModalHeader>
 
-            <ModalScroll
-              data={classes}
-              renderItem={({ item }) => (
-                <ClassButton onPress={() => handleSelectClass({
-                  id: item.id,
-                  description: item.descricao
-                })}>
-                  <ClassText>{item.descricao}</ClassText>
-                </ClassButton>
-              )}
-              keyExtractor={(item) => String(item.id)}
-            />
-          </ModalBox>
-        </ModalContainer>
-      </Modal>
+              <ModalScroll
+                data={classes}
+                renderItem={({ item }) => (
+                  <ClassButton onPress={() => handleSelectClass({
+                    id: item.id,
+                    description: item.descricao
+                  })}>
+                    <ClassText>{item.descricao}</ClassText>
+                  </ClassButton>
+                )}
+                keyExtractor={(item) => String(item.id)}
+              />
+            </ModalBox>
+          </ModalContainer>
+        </Modal>
 
 
-      {page === 'grade' && selectedClass.id ? (
-        <ReturnContainer onPress={() => handleRemoveClass()}>
-          <Feather name="chevron-left" size={RFValue(24)} color={colors.primary_dark} />
-          <ReturnText>Boletim Geral</ReturnText>
-        </ReturnContainer>
-      ) : (
-        <PeriodContainer>
-          <PeriodScroll
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            bounces={false}
-            data={periods}
-            renderItem={({ item, index }) => (
-              selectedPeriodKey === `${item.ano_letivo}.${item.periodo_letivo}` ? (
-                <PeriodButtonSelected
-                  isFirstElement={index === 0 ? true : false}>
-                  <PeriodText>{item.ano_letivo}.{item.periodo_letivo}</PeriodText>
-                </PeriodButtonSelected>
-              ) : (
-                <PeriodButton
-                  onPress={() => handleSelectPeriod(`${item.ano_letivo}.${item.periodo_letivo}`)}
-                  isFirstElement={index === 0 ? true : false}>
-                  <PeriodText>{item.ano_letivo}.{item.periodo_letivo}</PeriodText>
-                </PeriodButton>
-              )
-            )}
-            keyExtractor={(period) => `${period.ano_letivo}.${period.periodo_letivo}`}
-          >
-          </PeriodScroll>
-        </PeriodContainer>
-      )}
-
-      <PickerTitle>Matéria</PickerTitle>
-      <PickerContainer
-        onPress={() => setModalVisible(true)}
-        disabled={
-          !selectedPeriodKey || isFetchingClasses
-            ?
-            true
-            :
-            false
-        }
-      >
-        <Picker>
-          <PickerPlaceholder isSelected={selectedClass.id ? true : false}>
-            {selectedPeriodKey
-              ? isFetchingClasses
-                ? 'Carregando matérias...'
-                : selectedClass.description || 'Toque e escolha uma matéria'
-              : 'Selecione um período letivo'
-            }
-          </PickerPlaceholder>
-          <Feather name="plus-circle" size={RFValue(24)} color={colors.border} />
-        </Picker>
-      </PickerContainer>
-      <NavbarContainer>
-        <NavbarButton onPress={() => handleNavigate('Grades')}>
-          <NavbarGradient>
-            <Feather
-              name="file-text"
-              size={RFValue(24)}
-              color={page === 'grade' ? colors.alert : colors.primary_dark}
-            />
-          </NavbarGradient>
-        </NavbarButton>
-        <NavbarButton onPress={() => handleNavigate('Materials')}>
-          <NavbarGradient>
-            <Feather
-              name="paperclip"
-              size={RFValue(24)}
-              color={page === 'materials' ? colors.alert : colors.primary_dark}
-            />
-          </NavbarGradient>
-        </NavbarButton>
-        <NavbarButton onPress={() => handleNavigate('Classes')}>
-          <NavbarGradient>
-            <Feather
-              name="edit-3"
-              size={RFValue(24)}
-              color={page === 'classes' ? colors.alert : colors.primary_dark}
-            />
-          </NavbarGradient>
-        </NavbarButton>
-        <NavbarButton onPress={() => handleNavigate('Infos')}>
-          <NavbarGradient>
-            <Feather
-              name="info"
-              size={RFValue(24)}
-              color={page === 'information' ? colors.alert : colors.primary_dark}
-            />
-          </NavbarGradient>
-        </NavbarButton>
-      </NavbarContainer>
-      {
-        page === 'grade' ? (
-          selectedClass.id
-            ? <GradeSubject period={selectedPeriodKey} classID={selectedClass.id} />
-            : <Grade period={selectedPeriodKey} />
+        {page === 'grade' && selectedClass.id ? (
+          <ReturnContainer onPress={() => handleRemoveClass()}>
+            <Feather name="chevron-left" size={RFValue(24)} color={colors.primary_dark} />
+            <ReturnText>Boletim Geral</ReturnText>
+          </ReturnContainer>
         ) : (
-          page === 'materials' ? (
-            <Material classID={selectedClass.id || undefined} />
+          <PeriodContainer>
+            <PeriodScroll
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              bounces={false}
+              data={periods}
+              renderItem={({ item, index }) => (
+                selectedPeriodKey === `${item.ano_letivo}.${item.periodo_letivo}` ? (
+                  <PeriodButtonSelected
+                    isFirstElement={index === 0 ? true : false}>
+                    <PeriodText>{item.ano_letivo}.{item.periodo_letivo}</PeriodText>
+                  </PeriodButtonSelected>
+                ) : (
+                  <PeriodButton
+                    onPress={() => handleSelectPeriod(`${item.ano_letivo}.${item.periodo_letivo}`)}
+                    isFirstElement={index === 0 ? true : false}>
+                    <PeriodText>{item.ano_letivo}.{item.periodo_letivo}</PeriodText>
+                  </PeriodButton>
+                )
+              )}
+              keyExtractor={(period) => `${period.ano_letivo}.${period.periodo_letivo}`}
+            >
+            </PeriodScroll>
+          </PeriodContainer>
+        )}
+
+        <PickerTitle>Matéria</PickerTitle>
+        <PickerContainer
+          onPress={() => setModalVisible(true)}
+          disabled={
+            !selectedPeriodKey || isFetchingClasses
+              ?
+              true
+              :
+              false
+          }
+        >
+          <Picker>
+            <PickerPlaceholder isSelected={selectedClass.id ? true : false}>
+              {selectedPeriodKey
+                ? isFetchingClasses
+                  ? 'Carregando matérias...'
+                  : selectedClass.description || 'Toque e escolha uma matéria'
+                : 'Selecione um período letivo'
+              }
+            </PickerPlaceholder>
+            <Feather name="plus-circle" size={RFValue(24)} color={colors.border} />
+          </Picker>
+        </PickerContainer>
+        <NavbarContainer>
+          <NavbarButton onPress={() => setPage('grade')}>
+            <NavbarGradient>
+              <Feather
+                name="file-text"
+                size={RFValue(24)}
+                color={page === 'grade' ? colors.alert : colors.primary_dark}
+              />
+            </NavbarGradient>
+          </NavbarButton>
+          <NavbarButton onPress={() => setPage('materials')}>
+            <NavbarGradient>
+              <Feather
+                name="paperclip"
+                size={RFValue(24)}
+                color={page === 'materials' ? colors.alert : colors.primary_dark}
+              />
+            </NavbarGradient>
+          </NavbarButton>
+          <NavbarButton onPress={() => setPage('classes')}>
+            <NavbarGradient>
+              <Feather
+                name="edit-3"
+                size={RFValue(24)}
+                color={page === 'classes' ? colors.alert : colors.primary_dark}
+              />
+            </NavbarGradient>
+          </NavbarButton>
+          <NavbarButton onPress={() => setPage('information')}>
+            <NavbarGradient>
+              <Feather
+                name="info"
+                size={RFValue(24)}
+                color={page === 'information' ? colors.alert : colors.primary_dark}
+              />
+            </NavbarGradient>
+          </NavbarButton>
+        </NavbarContainer>
+        {
+          page === 'grade' ? (
+            selectedClass.id
+              ? <GradeSubject period={selectedPeriodKey} classID={selectedClass.id} />
+              : <Grade period={selectedPeriodKey} />
           ) : (
-            page === 'classes' ? (
-              <ClassData classID={selectedClass.id} />
+            page === 'materials' ? (
+              <Material classID={selectedClass.id || undefined} />
             ) : (
-              <Info classID={selectedClass.id} />
+              page === 'classes' ? (
+                <ClassData classID={selectedClass.id} />
+              ) : (
+                <Info classID={selectedClass.id} />
+              )
             )
           )
-        )
-      }
-    </>
+        }
+      </Container>
+    </ScrollContainer>
   )
 }

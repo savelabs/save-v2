@@ -38,7 +38,7 @@ type ProfileHeaderProps = {
 
 export function ProfileHeader({ editMode }: ProfileHeaderProps) {
   const { colors, theme } = useContext(ThemeContext);
-  const { student, signOut, saveStudent } = useAuth();
+  const { student, signOut, saveStudent, saveCredentials } = useAuth();
   const { navigate, goBack } = useNavigation();
 
   const [isShareModalVisible, setShareModalVisible] = useState(false);
@@ -105,7 +105,11 @@ export function ProfileHeader({ editMode }: ProfileHeaderProps) {
       <Container>
         <StudentImageButton onPress={() => navigate('ProfileEdit')}>
           <StudentImage
-            source={{ uri: avatarSuap }}
+            source={{
+              uri: avatarSuap, headers: {
+                "Authorization": `Bearer ${saveCredentials?.token}`
+              }
+            }}
           />
         </StudentImageButton>
         <StudentName>{student.vinculo.nome}</StudentName>

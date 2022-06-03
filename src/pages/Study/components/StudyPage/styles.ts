@@ -255,3 +255,13 @@ export const ReturnText = styled.Text`
   font-size: ${RFValue(10)}px;
   margin-left: ${RFValue(8)}px;
 `
+
+export const ScrollContainer = styled.ScrollView`
+  background-color: ${({ theme }) => theme.colors.background};
+`
+
+export const Container = styled.View`
+  padding: ${RFValue(28)}px;
+  flex: 1;
+  background-color: ${({ theme }) => theme.colors.background};
+`
