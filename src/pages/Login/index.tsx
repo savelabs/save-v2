@@ -44,6 +44,7 @@ export function Login() {
   const { colors } = useContext(ThemeContext)
   const [loading, setLoading] = useState(false);
 
+
   const animatedStyles = useAnimatedStyle(() => {
     return {
       transform: [
@@ -60,6 +61,7 @@ export function Login() {
     control,
     handleSubmit,
     reset,
+    setFocus,
     formState: { errors }
   } = useForm({
     resolver: yupResolver(schema),

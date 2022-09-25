@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { RFValue } from "react-native-responsive-fontsize";
 import { ThemeContext } from 'styled-components/native';
 import { useAuth } from '../../hooks/auth';
-import { ActivityIndicator, Modal, Share, TouchableWithoutFeedback, View } from 'react-native';
+import { ActivityIndicator, Linking, Modal, Share, TouchableWithoutFeedback, View } from 'react-native';
 
 import ShareImage from '../../assets/share.svg';
 import { warningAlert } from '../../utils/alert';

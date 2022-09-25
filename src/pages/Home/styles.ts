@@ -7,7 +7,7 @@ type ModalButtonProps = {
   alertButton?: boolean
 }
 
-export const Container = styled.View`
+export const Container = styled.ScrollView`
   background-color: ${({theme}) => theme.colors.background};
   flex: 1;
   padding: ${RFValue(28)}px;
